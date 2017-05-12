@@ -52,6 +52,8 @@ public class AESInterface {
              Integer[] text = stringToHex(textString);
              Integer[] initVector = stringToHex(initVectorString);
              
+             
+
              if (encryptionOrDecryption == 1) {
                  //Encrypt
              } else if (encryptionOrDecryption == 2) {
