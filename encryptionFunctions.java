@@ -1,6 +1,6 @@
 
 
-public class test{
+public class encryptionFunctions{
     public static void main(String[] args) {
         int[][] block = new int[4][4];
         for (int i=0; i<4; i++) {
