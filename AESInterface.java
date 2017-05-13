@@ -52,10 +52,11 @@ public class AESInterface {
              Integer[] text = stringToHex(textString);
              Integer[] initVector = stringToHex(initVectorString);
              
-             
+
 
              if (encryptionOrDecryption == 1) {
-                 //Encrypt
+                 Encryption encr = new Encryption(modeOfOperation, transmissionSize, initVector);
+                 System.out.println(encr.Encrypt(text, key));
              } else if (encryptionOrDecryption == 2) {
                  //Decypt
              } else {
