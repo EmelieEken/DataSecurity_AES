@@ -22,12 +22,40 @@ public class Encryption{
     }
 
     public String Encrypt(int[] text, int[] key) {
-        return "*";
+        encryptionFunctions encr = new encryptionFunctions();
+
+        //Print text
+        System.out.print("Text: \n [ " );
+        for(int i=0; i<text.length;i++){
+            System.out.print(text[i] + " ");
+        }
+        System.out.println("]" );
+
+        if (text.length % 16 != 0) {
+            //Change to add padding?
+            System.out.println("Text must be a multiple of 16 long");
+            System.exit(0);
+        }
+
+        if (key.length % 32 != 0) {
+            System.out.println("Key must be a multiple of 32 long");
+            System.exit(0);
+        }
+
+        for (int i=text.length; i>0; i--) {
+            //Create blocks
+        }
+
+        //Encrypt every block following the given modeOfOperation (call functions below)
+
+        return "*"; //Return encrypted 
     }
+
+    //create functions for all modeOfOperation
 
     public static void main(String[] args) {
         int[] in = {0,0};
-        int[] plainText = {0x56, 0xA2};
+        int[] plainText = {0x56, 0xA2, 0x5F, 0x5F, 0x5F, 0x5F, 0x5F, 0x5F, 0x5F, 0x5F, 0x5F, 0x5F, 0x5F, 0x5F, 0x5F, 0x5F};
         int[] key = {0x56, 0xA2};
         Encryption encrypt = new Encryption(0,0,in);
         System.out.println(encrypt.Encrypt(plainText, key));
