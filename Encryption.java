@@ -28,11 +28,11 @@ public class Encryption{
         //encryptionFunctions encr = new encryptionFunctions();
 
         //Print text
-        System.out.print("Text: \n [ " );
-        for(int i=0; i<text.length;i++){
-            System.out.print(text[i] + " ");
-        }
-        System.out.println("]" );
+        // System.out.print("Text: \n [ " );
+        // for(int i=0; i<text.length;i++){
+        //     System.out.print(text[i] + " ");
+        // }
+        // System.out.println("]" );
 
         if (text.length % 16 != 0) {
             //Change to add padding?
@@ -46,7 +46,7 @@ public class Encryption{
         }
 
         //Create blocks
-        System.out.println("Dividing into blocks");
+        //System.out.println("Dividing into blocks");
         blocks = new Block[text.length/16]; //Initialise array of textblocks for encryption
         for (int i=0; i<text.length/16; i++) {
             int n=0;
@@ -54,21 +54,29 @@ public class Encryption{
             for (int j=0; j<4; j++) {
                 for (int k=0; k<4; k++) {
                     textToBlock[n] = text[16*i+n];
-                    System.out.print(textToBlock[n] + " ");
+                    //System.out.print(textToBlock[n] + " ");
                     n++;
                 }
             }
             blocks[i] = new Block(textToBlock);
-            System.out.println();
+            //System.out.println();
         }
 
 
         if (modeOfOperation == 0) { //ECB, Electronic code book. Same key used for all blocks
             for (int i = 0; i<text.length/16; i++) {
-                EncryptBlock(blocks[i], key);
+                EncryptBlockECB(blocks[i], key);
                 //blocks[i].toString();
             }
 
+        } else if (modeOfOperation == 1) { //CFB
+
+        } else if (modeOfOperation == 2) { //CBC
+
+        } else if (modeOfOperation == 3) { //OFB
+
+        } else {
+            System.out.println("Mode of operation must be 0,1,2, or 3 for ECB, CFB, CBC, or OFB");
         }
 
         //Print blocks
@@ -90,7 +98,7 @@ public class Encryption{
     //create functions for all modeOfOperation
 
     //ECB
-    private static void EncryptBlock(Block block, int[] key) {
+    private static void EncryptBlockECB(Block block, int[] key) {
 
         //Expand key
         int[][] expandedKey = encryptionFunctions.keyExpansion(key);
