@@ -33,6 +33,7 @@ public class Block {
 		return res;
 	}
 
+	//For final printing
 	public String toStringOneLine(){
 		String res = "";
 		int i,j;
@@ -66,7 +67,7 @@ public class Block {
         // }
     }
 
-
+	//Substitute all bytes in data array
 	public void substituteBytes() {
 
         //System.out.println("\n After byte substitution \n");
@@ -120,6 +121,16 @@ public class Block {
 	//The same as addRoundKey
     public void invAddRoundKey(int[] key) {
        addRoundKey(key);
+    }
+
+
+	//Not implemented yet
+	public void invSubstituteByte() {
+		//Like substBytes but with SI-matrix, call invSubstByte
+	}
+	//Not implemented yet
+	private int invSubstituteByte(int toBeSubst) {
+        return 0;
     }
 
 }
