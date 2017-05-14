@@ -18,6 +18,8 @@ public class encryptionFunctions{
             System.out.println("]");
         }
 
+
+
         //substituteBytes(block);
 
         int[] key = {0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76};
@@ -25,6 +27,17 @@ public class encryptionFunctions{
 
         int[][] expandedKey = keyExpansion(key);
         
+        int[] roundConstant = new int[10];
+        roundConstant[0] = 0x01;
+        //System.out.print("\nRound constants: ");
+        for (int i=1;i<roundConstant.length-2;i++) {
+           roundConstant[i] = 2*roundConstant[i-1];
+           System.out.print(Integer.toHexString(roundConstant[i]) + " ");
+        }
+
+        Polynomial p1 = Polynomial.fromByte(0x80);
+        Polynomial p2 = Polynomial.fromByte(0x02);
+        System.out.println(Integer.toHexString((p1.mult(p2)).toByte()));
     
     }
 
@@ -131,6 +144,7 @@ public class encryptionFunctions{
             roundConstant[i] = 2*roundConstant[i-1];
             //System.out.print(Integer.toHexString(roundConstant[i]) + " ");
         }
+        
         roundConstant[8] = 0x1B;
         roundConstant[9] = 0x36;
 
@@ -159,19 +173,5 @@ public class encryptionFunctions{
         return expandedKey;
     }
 
-
-
-
-    //Inverse functions
-
-    // public static int invSubstituteByte(int toBeSubst) {
-    //     return 0;
-    // }
-
-    //Added to block
-    //The same as addRoundKey
-    //public static void invAddRoundKey(int[][] block, int[] key) {
-    //    addRoundKey(block, key);
-    //}
 
 }
