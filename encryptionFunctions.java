@@ -1,4 +1,4 @@
-
+//package data_security_assignment_2;
 
 public class encryptionFunctions{
     public static void main(String[] args) {
@@ -18,10 +18,10 @@ public class encryptionFunctions{
             System.out.println("]");
         }
 
-        substituteBytes(block);
+        //substituteBytes(block);
 
         int[] key = {0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76};
-        addRoundKey(block, key);
+        //addRoundKey(block, key);
 
         int[][] expandedKey = keyExpansion(key);
         
@@ -29,26 +29,26 @@ public class encryptionFunctions{
     }
 
 
+    //Added to Block
+    // public static void substituteBytes(int[][] block) {
 
-    public static void substituteBytes(int[][] block) {
+    //     System.out.println("\n After byte substitution \n");
 
-        System.out.println("\n After byte substitution \n");
-
-        //Substitute bytes, fist 4 bits = row, last 4 bits = column
-        for (int i=0; i<4; i++) {
-            System.out.print("[ ");
-            for (int j=0;j<4;j++) {
-                block[i][j] = substituteByte(block[i][j]);
-                System.out.print(Integer.toHexString(block[i][j]) + " "); //Move down to own method
-            }
-            System.out.println("]");
-        }
-    }
+    //     //Substitute bytes, fist 4 bits = row, last 4 bits = column
+    //     for (int i=0; i<4; i++) {
+    //         System.out.print("[ ");
+    //         for (int j=0;j<4;j++) {
+    //             block[i][j] = substituteByte(block[i][j]);
+    //             System.out.print(Integer.toHexString(block[i][j]) + " "); //Move down to own method
+    //         }
+    //         System.out.println("]");
+    //     }
+    // }
 
 
-
+    //added to Block
     //Substitute byte to entry in S-box
-    public static int substituteByte(int toBeSubst) {
+    private static int substituteByte(int toBeSubst) {
         int[][] sBox = {
             {0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76}, //1
             {0xCA, 0x82, 0xC9, 0x7D, 0xFA, 0x59, 0x47, 0xF0, 0xAD, 0xD4, 0xA2, 0xAF, 0x9C, 0xA4, 0x72, 0xC0},
@@ -78,26 +78,26 @@ public class encryptionFunctions{
     }
 
 
-
+    //Added to Block
     //block is a 4x4 2d array, key is a 16 byte long array
-    public static void addRoundKey(int[][] block, int[] key) {
-        int k = 0;
-        for (int i=0; i<4; i++) {
-            for (int j=0; j<4; j++) {
-                block[j][i] = block[j][i]^key[k]; //do columnwise
-                k++;
-            }
-        }
+    // public static void addRoundKey(int[][] block, int[] key) {
+    //     int k = 0;
+    //     for (int i=0; i<4; i++) {
+    //         for (int j=0; j<4; j++) {
+    //             block[j][i] = block[j][i]^key[k]; //do columnwise
+    //             k++;
+    //         }
+    //     }
 
-        System.out.println("\n After addRoundKey \n");
-        for (int i=0; i<4; i++) {
-            System.out.print("[ ");
-            for (int j=0;j<4;j++) {
-                System.out.print(Integer.toHexString(block[i][j]) + " ");
-            }
-            System.out.println("]");
-        }
-    }
+    //     System.out.println("\n After addRoundKey \n");
+    //     for (int i=0; i<4; i++) {
+    //         System.out.print("[ ");
+    //         for (int j=0;j<4;j++) {
+    //             System.out.print(Integer.toHexString(block[i][j]) + " ");
+    //         }
+    //         System.out.println("]");
+    //     }
+    // }
 
 
 
@@ -164,13 +164,14 @@ public class encryptionFunctions{
 
     //Inverse functions
 
-    public static int invSubstituteByte(int toBeSubst) {
-        return 0;
-    }
+    // public static int invSubstituteByte(int toBeSubst) {
+    //     return 0;
+    // }
 
+    //Added to block
     //The same as addRoundKey
-    public static void invAddRoundKey(int[][] block, int[] key) {
-        addRoundKey(block, key);
-    }
+    //public static void invAddRoundKey(int[][] block, int[] key) {
+    //    addRoundKey(block, key);
+    //}
 
 }
