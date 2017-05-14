@@ -27,17 +27,17 @@ public class encryptionFunctions{
 
         int[][] expandedKey = keyExpansion(key);
         
-        int[] roundConstant = new int[10];
-        roundConstant[0] = 0x01;
-        //System.out.print("\nRound constants: ");
-        for (int i=1;i<roundConstant.length-2;i++) {
-           roundConstant[i] = 2*roundConstant[i-1];
-           System.out.print(Integer.toHexString(roundConstant[i]) + " ");
-        }
+        // int[] roundConstant = new int[10];
+        // roundConstant[0] = 0x01;
+        // //System.out.print("\nRound constants: ");
+        // for (int i=1;i<roundConstant.length-2;i++) {
+        //    roundConstant[i] = 2*roundConstant[i-1];
+        //    System.out.print(Integer.toHexString(roundConstant[i]) + " ");
+        // }
 
-        Polynomial p1 = Polynomial.fromByte(0x80);
-        Polynomial p2 = Polynomial.fromByte(0x02);
-        System.out.println(Integer.toHexString((p1.mult(p2)).toByte()));
+        // Polynomial p1 = Polynomial.fromByte(0x1b);
+        // Polynomial p2 = Polynomial.fromByte(0x02);
+        // System.out.println(Integer.toHexString((p1.multGF8(p2)).toByte()));
     
     }
 
@@ -139,14 +139,20 @@ public class encryptionFunctions{
         //add constant (1st of 4 bytes in word, the rest are 0)
         int[] roundConstant = new int[10]; //Make dynamic and change to GF
         roundConstant[0] = 0x01;
-        //System.out.print("\nRound constants: ");
-        for (int i=1;i<roundConstant.length-2;i++) {
-            roundConstant[i] = 2*roundConstant[i-1];
-            //System.out.print(Integer.toHexString(roundConstant[i]) + " ");
+        Polynomial p2 = Polynomial.fromByte(0x02);
+        System.out.print("\nRound constants: ");
+        for (int i=1;i<roundConstant.length;i++) {
+            if (2*roundConstant[i-1]>255) {
+                Polynomial p1 = Polynomial.fromByte(roundConstant[i-1]);
+                roundConstant[i] = p1.multGF8(p2).toByte();
+            } else {
+                roundConstant[i] = 2*roundConstant[i-1];
+            }
+            System.out.print(Integer.toHexString(roundConstant[i]) + " ");
         }
         
-        roundConstant[8] = 0x1B;
-        roundConstant[9] = 0x36;
+        //roundConstant[8] = 0x1B;
+        //roundConstant[9] = 0x36;
 
         //System.out.println("\n");
         for (int i=4;i<expandedKeySize;i++) {
