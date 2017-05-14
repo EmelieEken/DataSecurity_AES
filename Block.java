@@ -2,16 +2,18 @@
 
 public class Block {
 
-	// mix columns ; shift rows
-	
 	//every element is a integer representing a byte ( 0x5A )
 	private int[][] data;
+	
+	final static public int[][] ENCRYPTION_MATRIX = new int[][]{new int[]{2,3,1,1},new int[]{1,2,3,1},new int[]{1,1,2,3},new int[]{3,1,1,2}};
 	
 	public Block(int[] byteArray) {
 		
 		data = new int[4][4];
-
+		
+		
 		int i,j;
+		
 		for(j=0;j<4;j++){
 			
 			for(i=0;i<4;i++){
@@ -20,29 +22,60 @@ public class Block {
 		}
 	}
 	
+	public Block(int[][] byteMatrix){
+		data = byteMatrix.clone();
+	}
+	
+	public void mixColumn(int columnNum,int[][] multMatrix){
+		
+		// we built the new column
+		int[] newColumn = new int[4];
+		for(int i=0;i<4;i++){
+			Polynomial p = new Polynomial();
+			for(int j=0;j<4;j++){
+				
+				// elt i,j from the multmatrix
+				Polynomial p1 = Polynomial.fromByte(multMatrix[i][j]);
+				System.out.println("p1 "+i+": "+multMatrix[i][j]+" -> "+p1.toString());
+				
+				Polynomial p2 = Polynomial.fromByte(this.data[j][columnNum]);
+				System.out.println("p2 "+i+": "+String.format("%02X", this.data[j][columnNum])+" -> "+p2.toString());
+				
+				Polynomial tmp = p1.mult(p2);
+				System.out.println("tmp: "+tmp.toString()+" ("+String.format("%02X", tmp.toByte())+")");
+				tmp = tmp.divide(Polynomial.RED);
+				System.out.println("tmp: "+tmp.toString());
+				System.out.println("p: "+p.toString());
+				p = p.add(tmp);
+				System.out.println("p: "+p.toString());
+				System.out.println();
+			}
+			
+			System.out.println("poly "+i+": "+p.toString());
+			newColumn[i] = p.toByte();
+			System.out.println();
+		}
+				
+		// we replace the column in the block
+		for(int i=0;i<4;i++){
+			this.data[i][columnNum] = newColumn[i];
+		}
+	}
+	
+	public void mixColumnsEncode(){
+		for(int j=0;j<4;j++){
+			mixColumn(j,ENCRYPTION_MATRIX);
+		}
+	}
+	
 	public String toString(){
 		String res = "";
 		int i,j;
 		for(i=0;i<4;i++){
-			res = res + "[ ";
 			for(j=0;j<4;j++){
 				res += String.format("%02X", data[i][j])+" ";
 			}
-			res += "]\n";
-		}
-		return res;
-	}
-
-	//For final printing
-	public String toStringOneLine(){
-		String res = "";
-		int i,j;
-		for(i=0;i<4;i++){
-			//res = res + "[ ";
-			for(j=0;j<4;j++){
-				res += String.format("%02X", data[i][j])+" ";
-			}
-			//res += "]\n";
+			res += "\n\n";
 		}
 		return res;
 	}
