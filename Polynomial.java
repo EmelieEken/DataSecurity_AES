@@ -14,7 +14,6 @@ public class Polynomial {
 		degree = 0;
 		coeff = null;
 	}
-
 	
 	public Polynomial(boolean[] coeff){
 		this.degree = coeff.length;
@@ -56,6 +55,9 @@ public class Polynomial {
 				byteValue -= Math.pow(2, index);
 				res.coeff[index] = true;
 			}
+			else{
+				res.coeff[index] = false;
+			}
 			index --;
 		}
 		return res;
@@ -75,6 +77,7 @@ public class Polynomial {
 		return this.degree;
 	}
 	
+	
 	public Polynomial add(Polynomial p){
 		
 		Polynomial maxP, minP;
@@ -87,22 +90,19 @@ public class Polynomial {
 			minP = this;
 		}
 		
+		
 		Polynomial res = new Polynomial(maxP);
-		for(int i=0; i<maxP.degree;i++){
-			if(i >= minP.degree){
-				res.coeff[i] = maxP.coeff[i];
-			}
-			else{
-				res.coeff[i] = minP.coeff[i] ^ maxP.coeff[i];
+		for(int i=0; i<minP.degree;i++){
+			if(minP.coeff[i]){
+				res.coeff[i] = !maxP.coeff[i];
 			}
 		}
 		
-		int i = res.coeff.length -1;
-		while(res.coeff[i] == false){
-			res.degree --;
-			i --;
+		int j = res.coeff.length;
+		while(j> 0 && !res.coeff[j-1]){
+			j --;
 		}
-		
+		res.degree = j;
 		return res;
 	}
 	
@@ -116,7 +116,6 @@ public class Polynomial {
 	}
 	
 	
-	// /!\ DOESN'T WORK
 	public Polynomial mult(Polynomial p){
 		Polynomial res = new Polynomial();
 		for(int i=0;i<this.degree;i++){
@@ -125,6 +124,16 @@ public class Polynomial {
 			}
 		}
 		return res;
+	}
+	
+	public Polynomial multGF8(Polynomial p){
+		Polynomial res = new Polynomial();
+		for(int i=0;i<this.degree;i++){
+			if(this.coeff[i]){
+				res = res.add(p.shift(i));
+			}
+		}
+		return res.divide(RED);
 	}
 	
 	public Polynomial addCoeff(int coeff_index){
@@ -164,6 +173,7 @@ public class Polynomial {
 	}
 	
 	// divide this with p
+	// return the remaining
 	public Polynomial divide(Polynomial p){
 		System.out.println("divide start res = "+this.toString());
 		if(this.degree < p.degree){
