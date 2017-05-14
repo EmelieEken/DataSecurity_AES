@@ -1,4 +1,4 @@
-package data_security_assignment_2;
+//package data_security_assignment_2;
 
 public class Block {
 
@@ -10,10 +10,8 @@ public class Block {
 	public Block(int[] byteArray) {
 		
 		data = new int[4][4];
-		
-		
+
 		int i,j;
-		
 		for(j=0;j<4;j++){
 			
 			for(i=0;i<4;i++){
@@ -26,14 +24,27 @@ public class Block {
 		String res = "";
 		int i,j;
 		for(i=0;i<4;i++){
+			res = res + "[ ";
 			for(j=0;j<4;j++){
 				res += String.format("%02X", data[i][j])+" ";
 			}
-			res += "\n\n";
+			res += "]\n";
 		}
 		return res;
 	}
 
+	public String toStringOneLine(){
+		String res = "";
+		int i,j;
+		for(i=0;i<4;i++){
+			//res = res + "[ ";
+			for(j=0;j<4;j++){
+				res += String.format("%02X", data[i][j])+" ";
+			}
+			//res += "]\n";
+		}
+		return res;
+	}
 
 	//block is a 4x4 2d array, key is a 16 byte long array
     public void addRoundKey(int[] key) {
@@ -45,30 +56,31 @@ public class Block {
             }
         }
 
-        System.out.println("\n After addRoundKey \n");
-        for (int i=0; i<4; i++) {
-            System.out.print("[ ");
-            for (int j=0;j<4;j++) {
-                System.out.print(Integer.toHexString(data[i][j]) + " ");
-            }
-            System.out.println("]");
-        }
+        // System.out.println("\n After addRoundKey \n");
+        // for (int i=0; i<4; i++) {
+        //     System.out.print("[ ");
+        //     for (int j=0;j<4;j++) {
+        //         System.out.print(Integer.toHexString(data[i][j]) + " ");
+        //     }
+        //     System.out.println("]");
+        // }
     }
 
 
 	public void substituteBytes() {
 
-        System.out.println("\n After byte substitution \n");
+        //System.out.println("\n After byte substitution \n");
 
         //Substitute bytes, fist 4 bits = row, last 4 bits = column
         for (int i=0; i<4; i++) {
-            System.out.print("[ ");
+            //System.out.print("[ ");
             for (int j=0;j<4;j++) {
                 data[i][j] = substituteByte(data[i][j]);
-                System.out.print(Integer.toHexString(data[i][j]) + " "); //Move down to own method
+                //System.out.print(Integer.toHexString(data[i][j]) + " ");
             }
-            System.out.println("]");
+            //System.out.println("]");
         }
+
     }
 
 
@@ -100,6 +112,14 @@ public class Block {
         int row = Integer.parseInt(""+hex.charAt(0),16);
         int col = Integer.parseInt(""+hex.charAt(1),16);
         return sBox[row][col];
+    }
+
+
+	//Inverse functions
+
+	//The same as addRoundKey
+    public void invAddRoundKey(int[] key) {
+       addRoundKey(key);
     }
 
 }
