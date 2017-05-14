@@ -118,9 +118,11 @@ public class encryptionFunctions{
     public static int[][] keyExpansion(int[] key) {
         int keySize = key.length;
         int expandedKeySize = 0;
+        int rounds = 0;
         switch (keySize) {
             case 16: 
                 expandedKeySize = 44; //words
+                rounds = 10;
                 break;
             //Add more cases
         }
@@ -137,10 +139,11 @@ public class encryptionFunctions{
         }
 
         //add constant (1st of 4 bytes in word, the rest are 0)
-        int[] roundConstant = new int[10]; //Make dynamic and change to GF
+        int[] roundConstant = new int[rounds]; //Make dynamic and change to GF
         roundConstant[0] = 0x01;
         Polynomial p2 = Polynomial.fromByte(0x02);
-        System.out.print("\nRound constants: ");
+        System.out.print("\nRound constants: " + Integer.toHexString(roundConstant[0]) + " ");
+
         for (int i=1;i<roundConstant.length;i++) {
             if (2*roundConstant[i-1]>255) {
                 Polynomial p1 = Polynomial.fromByte(roundConstant[i-1]);
@@ -150,6 +153,7 @@ public class encryptionFunctions{
             }
             System.out.print(Integer.toHexString(roundConstant[i]) + " ");
         }
+        System.out.println("\n");
         
         //roundConstant[8] = 0x1B;
         //roundConstant[9] = 0x36;
