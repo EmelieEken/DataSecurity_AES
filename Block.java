@@ -80,6 +80,17 @@ public class Block {
 		return res;
 	}
 
+	public String toStringOneLine(){
+		String res = "";
+		int i,j;
+		for(i=0;i<4;i++){
+			for(j=0;j<4;j++){
+				res += String.format("%02X", data[i][j])+" ";
+			}
+		}
+		return res;
+	}
+
 	//block is a 4x4 2d array, key is a 16 byte long array
     public void addRoundKey(int[] key) {
         int k = 0;
