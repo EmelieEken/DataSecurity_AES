@@ -175,7 +175,7 @@ public class Polynomial {
 	// divide this with p
 	// return the remaining
 	public Polynomial divide(Polynomial p){
-		System.out.println("divide start res = "+this.toString());
+		//System.out.println("divide start res = "+this.toString());
 		if(this.degree < p.degree){
 			return new Polynomial(this);
 		}
