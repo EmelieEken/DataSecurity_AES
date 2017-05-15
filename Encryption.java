@@ -103,9 +103,23 @@ public class Encryption{
         //Expand key
         int[][] expandedKey = encryptionFunctions.keyExpansion(key);
 
+        int rounds = 0;
+
+        switch(key.length) {
+            case 16: 
+                rounds = 10;
+                break;
+            case 24:
+                rounds = 12;
+                break;
+            case 32:
+                rounds = 14;
+                break;
+        }
+
         block.addRoundKey(key); //Add round key (original key) before going into first round
 
-        for (int i = 0; i<9; i++) { //Do 9 rounds: byte sustitution, shift rows, mix col, add round key
+        for (int i = 0; i<rounds-1; i++) { //Do 9 rounds: byte sustitution, shift rows, mix col, add round key
             
             block.substituteBytes();
             System.out.println("\n After byte substitution \n" + block.toString());
@@ -136,13 +150,13 @@ public class Encryption{
         System.out.println("\n After addRoundKey \n" + block.toString());
     }
 
-    public static void main(String[] args) {
-        int[] in = {0};
-        int[] plainText = {0x56, 0xA2, 0x5F, 0x9F, 0x5F, 0x5F, 0x8F, 0x5F, 0x5F, 0x52, 0x5F, 0x5F, 0x5F, 0x5F, 0x4F, 0x5F, 0x46, 0xA2, 0x5F, 0x9F, 0x5F, 0x5F, 0x8F, 0x5F, 0x5F, 0x52, 0x5F, 0x5F, 0x5F, 0x5F, 0x4F, 0x5F};
-        int[] key = {0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0xE5};
-        Encryption encrypt = new Encryption(0,0,in);
-        System.out.println(encrypt.Encrypt(plainText, key));
-    }
+    // public static void main(String[] args) {
+    //     int[] in = {0};
+    //     int[] plainText = {0x56, 0xA2, 0x5F, 0x9F, 0x5F, 0x5F, 0x8F, 0x5F, 0x5F, 0x52, 0x5F, 0x5F, 0x5F, 0x5F, 0x4F, 0x5F, 0x46, 0xA2, 0x5F, 0x9F, 0x5F, 0x5F, 0x8F, 0x5F, 0x5F, 0x52, 0x5F, 0x5F, 0x5F, 0x5F, 0x4F, 0x5F};
+    //     int[] key = {0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0xE5};
+    //     Encryption encrypt = new Encryption(0,0,in);
+    //     System.out.println(encrypt.Encrypt(plainText, key));
+    // }
 
 
 }
