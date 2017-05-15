@@ -2,18 +2,17 @@
 
 public class Block {
 
+	// mix columns ; shift rows
+	
 	//every element is a integer representing a byte ( 0x5A )
 	private int[][] data;
 	
 	final static public int[][] ENCRYPTION_MATRIX = new int[][]{new int[]{2,3,1,1},new int[]{1,2,3,1},new int[]{1,1,2,3},new int[]{3,1,1,2}};
+	final static public int[][] DECRYPTION_MATRIX = new int[][]{new int[]{14,11,13,9},new int[]{9,14,11,13},new int[]{13,9,14,11},new int[]{11,13,9,14}};
 	
 	public Block(int[] byteArray) {
-		
 		data = new int[4][4];
-		
-		
 		int i,j;
-		
 		for(j=0;j<4;j++){
 			
 			for(i=0;i<4;i++){
@@ -23,7 +22,12 @@ public class Block {
 	}
 	
 	public Block(int[][] byteMatrix){
-		data = byteMatrix.clone();
+		data = new int[4][4];
+		for(int i=0;i<4;i++){
+			for(int j=0;j<4;j++){
+				data[i][j] = byteMatrix[i][j];
+			}
+		}
 	}
 	
 	public void mixColumn(int columnNum,int[][] multMatrix){
@@ -36,24 +40,24 @@ public class Block {
 				
 				// elt i,j from the multmatrix
 				Polynomial p1 = Polynomial.fromByte(multMatrix[i][j]);
-				System.out.println("p1 "+i+": "+multMatrix[i][j]+" -> "+p1.toString());
+//				System.out.println("p1 "+i+": "+multMatrix[i][j]+" -> "+p1.toString());
 				
 				Polynomial p2 = Polynomial.fromByte(this.data[j][columnNum]);
-				System.out.println("p2 "+i+": "+String.format("%02X", this.data[j][columnNum])+" -> "+p2.toString());
+//				System.out.println("p2 "+i+": "+String.format("%02X", this.data[j][columnNum])+" -> "+p2.toString());
 				
 				Polynomial tmp = p1.mult(p2);
-				System.out.println("tmp: "+tmp.toString()+" ("+String.format("%02X", tmp.toByte())+")");
+//				System.out.println("tmp: "+tmp.toString()+" ("+String.format("%02X", tmp.toByte())+")");
 				tmp = tmp.divide(Polynomial.RED);
-				System.out.println("tmp: "+tmp.toString());
-				System.out.println("p: "+p.toString());
+//				System.out.println("tmp: "+tmp.toString());
+//				System.out.println("p: "+p.toString());
 				p = p.add(tmp);
-				System.out.println("p: "+p.toString());
-				System.out.println();
+//				System.out.println("p: "+p.toString());
+//				System.out.println();
 			}
 			
-			System.out.println("poly "+i+": "+p.toString());
+//			System.out.println("poly "+i+": "+p.toString());
 			newColumn[i] = p.toByte();
-			System.out.println();
+//			System.out.println();
 		}
 				
 		// we replace the column in the block
@@ -62,10 +66,35 @@ public class Block {
 		}
 	}
 	
-	public void mixColumnsEncode(){
+	public void mixColumnsEncryption(){
 		for(int j=0;j<4;j++){
 			mixColumn(j,ENCRYPTION_MATRIX);
 		}
+	}
+	
+	public void mixColumnsDecryption(){
+		for(int j=0;j<4;j++){
+			mixColumn(j,DECRYPTION_MATRIX);
+		}
+	}
+	
+	public void shiftRowsEncryption(){
+		int[][] newMatrix = new int[4][4];
+		for(int i=0;i<4;i++){
+			for(int j=0;j<4;j++){
+				newMatrix[i][j] = data[i][(j+i) % 4]; 
+			}
+		}
+		data = newMatrix;
+	}
+	public void shiftRowsDecryption(){
+		int[][] newMatrix = new int[4][4];
+		for(int i=0;i<4;i++){
+			for(int j=0;j<4;j++){
+				newMatrix[i][j] = data[i][(j-i) % 4]; 
+			}
+		}
+		data = newMatrix;
 	}
 	
 	public String toString(){
@@ -79,7 +108,7 @@ public class Block {
 		}
 		return res;
 	}
-
+	
 	public String toStringOneLine(){
 		String res = "";
 		int i,j;
@@ -90,7 +119,7 @@ public class Block {
 		}
 		return res;
 	}
-
+	
 	//block is a 4x4 2d array, key is a 16 byte long array
     public void addRoundKey(int[] key) {
         int k = 0;
@@ -176,5 +205,4 @@ public class Block {
 	private int invSubstituteByte(int toBeSubst) {
         return 0;
     }
-
 }
