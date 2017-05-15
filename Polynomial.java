@@ -29,7 +29,12 @@ public class Polynomial {
 	// copy constructor
 	public Polynomial(Polynomial p){
 		this.degree = p.degree;
-		this.coeff = p.coeff.clone();
+		if(p.coeff == null){
+			this.coeff = null;
+		}
+		else{
+			this.coeff = p.coeff.clone();
+		}
 	}
 	
 	public Polynomial(int degree, Polynomial p){
@@ -49,6 +54,7 @@ public class Polynomial {
 	
 	public static Polynomial fromByte(int byteValue){
 		Polynomial res = new Polynomial(8);
+		res.coeff[7] = false;
 		int index = 7;
 		while(index >= 0 && byteValue > 0){ // in case of a wrong input
 			if(byteValue >= Math.pow(2, index)){
@@ -61,6 +67,19 @@ public class Polynomial {
 			index --;
 		}
 		return res;
+	}
+	
+	private void updateDegree(){
+		if(coeff == null){
+			degree = 0;
+		}
+		else{
+			int d = coeff.length;
+			while(d > 0 && !coeff[d-1]){
+				d --;
+			}
+			degree = d;
+		}
 	}
 	
 	public int toByte(){
@@ -78,7 +97,7 @@ public class Polynomial {
 	}
 	
 	
-	public Polynomial add(Polynomial p){
+	public Polynomial add(Polynomial p){		
 		
 		Polynomial maxP, minP;
 		if(this.degree >= p.degree){
@@ -97,12 +116,9 @@ public class Polynomial {
 				res.coeff[i] = !maxP.coeff[i];
 			}
 		}
+		res.updateDegree();
 		
-		int j = res.coeff.length;
-		while(j> 0 && !res.coeff[j-1]){
-			j --;
-		}
-		res.degree = j;
+		
 		return res;
 	}
 	
@@ -175,7 +191,7 @@ public class Polynomial {
 	// divide this with p
 	// return the remaining
 	public Polynomial divide(Polynomial p){
-		System.out.println("divide start res = "+this.toString());
+//		System.out.println("divide start res = "+this.toString());
 		if(this.degree < p.degree){
 			return new Polynomial(this);
 		}
@@ -190,7 +206,7 @@ public class Polynomial {
 			while(res.degree > p.degree){
 				diff = res.degree - p.degree;
 				res = res.add(p.shift(diff));
-				System.out.println("divide iteration res = "+res.toString());
+//				System.out.println("divide iteration res = "+res.toString());
 			}
 			
 			
