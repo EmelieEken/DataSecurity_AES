@@ -45,6 +45,40 @@ public class Block {
 		return res;
 	}
 	
+	public void encrypt(int[] key){
+		
+		//Expand key
+		int[][] expandedKey = KeyManipulation.keyExpansion(key);
+		int rounds = 0;
+
+		switch(key.length) {
+		    case 16: 
+			rounds = 10;
+			break;
+		    case 24:
+			rounds = 12;
+			break;
+		    case 32:
+			rounds = 14;
+			break;
+		}
+
+		this.addRoundKey(key); //Add round key (original key) before going into first round
+
+		for (int i = 0; i<rounds-1; i++) { //Do 9 rounds: byte substitution, shift rows, mix col, add round key
+
+		    int[] currentKey = new int[16];
+		    //System.out.print("\nCurrent key");
+		    for (int j = 0; j<16; j++) {
+
+			currentKey[j] = expandedKey[(i+1)*4 + j/4][j%4]; 
+			//System.out.print(currentKey[j] + " ");
+		    }
+		    //block.addRoundKey(currentKey);
+		    this.regularRoundEncryption(currentKey);
+		    System.out.println("\n After addRoundKey \n" + this.toString());
+		}
+	
 	public void regularRoundEncryption(int[] key){
 		this.substituteBytes();
 		this.shiftRowsEncryption();
@@ -57,6 +91,8 @@ public class Block {
 		this.shiftRowsEncryption();
 		this.addRoundKey(key);
 	}
+	
+	
 	
 	public void mixColumn(int columnNum,int[][] multMatrix){
 		
