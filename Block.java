@@ -10,6 +10,10 @@ public class Block {
 	final static public int[][] ENCRYPTION_MATRIX = new int[][]{new int[]{2,3,1,1},new int[]{1,2,3,1},new int[]{1,1,2,3},new int[]{3,1,1,2}};
 	final static public int[][] DECRYPTION_MATRIX = new int[][]{new int[]{14,11,13,9},new int[]{9,14,11,13},new int[]{13,9,14,11},new int[]{11,13,9,14}};
 	
+	public Block() {
+		data = new int[4][4];
+	}
+	
 	public Block(int[] byteArray) {
 		data = new int[4][4];
 		int i,j;
@@ -28,6 +32,17 @@ public class Block {
 				data[i][j] = byteMatrix[i][j];
 			}
 		}
+	}
+	
+	// return a block which is the XOR of the this and b
+	public Block add(Block b){
+		Block res = new Block();
+		for(int i=0;i<4;i++){
+			for(int j=0;j<4;j++){
+				res.data[i][j] = this.data[i][j] ^ b.data[i][j];
+			}
+		}
+		return res;
 	}
 	
 	public void regularRoundEncryption(int[] key){
