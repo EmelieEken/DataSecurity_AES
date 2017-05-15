@@ -22,7 +22,8 @@ public class encryptionFunctions{
 
         //substituteBytes(block);
 
-        int[] key = {0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76};
+        int[] key = {0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76,
+                    0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76};
         //addRoundKey(block, key);
 
         int[][] expandedKey = keyExpansion(key);
@@ -121,10 +122,17 @@ public class encryptionFunctions{
         int rounds = 0;
         switch (keySize) {
             case 16: 
-                expandedKeySize = 44; //words
+                expandedKeySize = 44; //Number of words
                 rounds = 10;
                 break;
-            //Add more cases
+            case 24: //Test these
+                expandedKeySize = 52; //Number of words
+                rounds = 12;
+                break;
+            case 32:
+                expandedKeySize = 60; //Number of words
+                rounds = 14;
+                break;
         }
         int[][] expandedKey = new int[expandedKeySize][4]; //words have 4 bytes
 
