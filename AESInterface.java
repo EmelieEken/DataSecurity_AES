@@ -5,6 +5,8 @@ import java.nio.charset.*;
 import java.nio.file.StandardOpenOption;
 import java.util.*; //For list
 
+//package data_security_assignment_2;
+
 public class AESInterface {
 
     public static void main(String[] args) {
@@ -48,19 +50,19 @@ public class AESInterface {
              String initVectorString = fileLines.get(5); //Initialisation vector
 
              //Convert to array of Integers
-             Integer[] key = stringToHex(keyString);
-             Integer[] text = stringToHex(textString);
-             Integer[] initVector = stringToHex(initVectorString);
+             int[] key = stringToHex(keyString);
+             int[] text = stringToHex(textString);
+             int[] initVector = stringToHex(initVectorString);
              
 
 
-             if (encryptionOrDecryption == 1) {
+             if (encryptionOrDecryption == 0) {
                  Encryption encr = new Encryption(modeOfOperation, transmissionSize, initVector);
                  System.out.println(encr.Encrypt(text, key));
-             } else if (encryptionOrDecryption == 2) {
+             } else if (encryptionOrDecryption == 1) {
                  //Decypt
              } else {
-                 System.out.println("First line must be a 1 for encryption or 2 for decryption");
+                 System.out.println("First line must be a 0 for encryption or 1 for decryption");
                  System.exit(0);
              }
 
@@ -72,17 +74,18 @@ public class AESInterface {
     }
 
     //Convert String of hexadecimals to array of Integers 
-    public static Integer[] stringToHex(String str) {
+    public static int[] stringToHex(String str) {
         List<Integer> strAsHexList = new ArrayList<Integer>();
         int i = 0;
-        while (i < str.length()) {
+        while (i < str.length()-1) { //-1 to handle case where just one number
             String number = String.valueOf(str.charAt(i)) + String.valueOf(str.charAt(i+1));//+str.charAt(0+1);
             //System.out.print(Integer.parseInt(number, 16)); //Integer.parseInt(number, 16)
             strAsHexList.add(Integer.parseInt(number, 16));
             i = i+3;
         }
-        Integer[] strAsHex = new Integer[strAsHexList.size()];
-        strAsHexList.toArray(strAsHex);
+        //integer[] strAsHex = new int[strAsHexList.size()];
+        int[] strAsHex = strAsHexList.stream().mapToInt(h->h).toArray();
+        //strAsHexList.toArray(strAsHex);
         return strAsHex;
     }
 }
