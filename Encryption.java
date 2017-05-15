@@ -121,8 +121,8 @@ public class Encryption{
 
         for (int i = 0; i<rounds-1; i++) { //Do 9 rounds: byte sustitution, shift rows, mix col, add round key
             
-            block.substituteBytes();
-            System.out.println("\n After byte substitution \n" + block.toString());
+            //block.substituteBytes();
+            //System.out.println("\n After byte substitution \n" + block.toString());
             //block.shiftRows();
             //block.mixCols();
             int[] currentKey = new int[16];
@@ -132,21 +132,23 @@ public class Encryption{
                 currentKey[j] = expandedKey[(i+1)*4 + j/4][j%4]; 
                 //System.out.print(currentKey[j] + " ");
             }
-            block.addRoundKey(currentKey);
+            //block.addRoundKey(currentKey);
+            block.regularRoundEncryption(currentKey);
             System.out.println("\n After addRoundKey \n" + block.toString());
         }
 
         //Round 10 
-        System.out.println("-----Round 10-----");
-        block.substituteBytes();
-        System.out.println("\n After byte substitution \n" + block.toString());
+        System.out.println("-----Final Round-----");
+        //block.substituteBytes();
+        //System.out.println("\n After byte substitution \n" + block.toString());
         //block.shiftRows();
         int[] currentKey = new int[16];
         for (int j = 0; j<16; j++) {
             currentKey[j] = expandedKey[(9+1)*4 + j/4][j%4]; 
             //System.out.print(currentKey[j] + " ");
         }
-        block.addRoundKey(currentKey);
+        //block.addRoundKey(currentKey);
+        block.lastRoundEncryption(currentKey);
         System.out.println("\n After addRoundKey \n" + block.toString());
     }
 
