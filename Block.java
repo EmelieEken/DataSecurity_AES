@@ -30,6 +30,19 @@ public class Block {
 		}
 	}
 	
+	public void regularRoundEncryption(int[] key){
+		this.substituteBytes();
+		this.shiftRowsEncryption();
+		this.mixColumnsEncryption();
+		this.addRoundKey(key);
+	}
+	
+	public void lastRoundEncryption(int[] key){
+		this.substituteBytes();
+		this.shiftRowsEncryption();
+		this.addRoundKey(key);
+	}
+	
 	public void mixColumn(int columnNum,int[][] multMatrix){
 		
 		// we built the new column
