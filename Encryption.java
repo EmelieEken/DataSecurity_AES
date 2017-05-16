@@ -35,6 +35,14 @@ public class Encryption{
             System.exit(0);
         }
 
+        if (modeOfOperation == 0 && (initVector.length != 1 || initVector[0] != 0)) {
+            System.out.println("Initialisation vector must be set to 0 for ECB mode");
+            System.exit(0);
+        } else if (initVector.length != 16) {
+            System.out.println("Initialisation vector must be 16 bytes long for CBC, CFB, and OFB mode");
+            System.exit(0);
+        }
+
         //Create blocks
         //System.out.println("Dividing into blocks");
         blocks = new Block[text.length/16]; //Initialise array of textblocks for encryption
@@ -56,8 +64,8 @@ public class Encryption{
         switch (modeOfOperation) { //ECB, Electronic code book. Same key used for all blocks
             case 0:
                 //for (int i = 0; i<text.length/16; i++) {
-                    EncryptBlockECB(blocks, key);
-                    //blocks[i].toString();
+                EncryptBlockECB(blocks, key);
+                //blocks[i].toString();
                 //}
                 break;
 
@@ -68,8 +76,8 @@ public class Encryption{
             //EncryptBlockCBC(blocks[0], initVector);
                 for (int i = 1; i<blocks.length; i++) {
                 //EncryptBlockCBC(blocks[i], blocks[i-1]);
-            }
-            break;
+                }
+                break;
             case 3: //OFB
                 break;
             default:
