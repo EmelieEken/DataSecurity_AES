@@ -100,7 +100,7 @@ public class Decryption{
     private static void DecryptBlockECB(Block[] block, int[] key) {
 
         for (int i=0; i<block.length; i++) {
-            block[i].Decrypt(key);
+            block[i].decrypt(key);
         }
 
     }
