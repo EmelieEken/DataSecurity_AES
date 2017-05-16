@@ -81,17 +81,23 @@ public class AESInterface {
 
     //Convert String of hexadecimals to array of Integers 
     public static int[] stringToHex(String str) {
-        List<Integer> strAsHexList = new ArrayList<Integer>();
-        int i = 0;
-        while (i < str.length()-1) { //-1 to handle case where just one number
-            String number = String.valueOf(str.charAt(i)) + String.valueOf(str.charAt(i+1));//+str.charAt(0+1);
-            //System.out.print(Integer.parseInt(number, 16)); //Integer.parseInt(number, 16)
-            strAsHexList.add(Integer.parseInt(number, 16));
-            i = i+3;
+        int[] strAsHex;
+        if (str.length() == 1) {
+            strAsHex = new int[1];
+            strAsHex[0] = 0;
+        } else {
+            List<Integer> strAsHexList = new ArrayList<Integer>();
+            int i = 0;
+            while (i < str.length()-1) { //-1 to handle case where just one number
+                String number = String.valueOf(str.charAt(i)) + String.valueOf(str.charAt(i+1));//+str.charAt(0+1);
+                //System.out.print(Integer.parseInt(number, 16)); //Integer.parseInt(number, 16)
+                strAsHexList.add(Integer.parseInt(number, 16));
+                i = i+3;
+            }
+            //integer[] strAsHex = new int[strAsHexList.size()];
+            strAsHex = strAsHexList.stream().mapToInt(h->h).toArray();
+            //strAsHexList.toArray(strAsHex);
         }
-        //integer[] strAsHex = new int[strAsHexList.size()];
-        int[] strAsHex = strAsHexList.stream().mapToInt(h->h).toArray();
-        //strAsHexList.toArray(strAsHex);
         return strAsHex;
     }
 }
