@@ -86,11 +86,11 @@ public class Block {
 		    }
 		    //block.addRoundKey(currentKey);
 		    this.regularRoundEncryption(currentKey);
-		    System.out.println("\n After addRoundKey \n" + this.toString());
+		    //System.out.println("\n After addRoundKey \n" + this.toString());
 		}
 
 		//Final round
-        System.out.println("-----Final Round-----");
+        //System.out.println("-----Final Round-----");
         //block.substituteBytes();
         //System.out.println("\n After byte substitution \n" + block.toString());
         //block.shiftRows();
@@ -101,7 +101,7 @@ public class Block {
         }
         //block.addRoundKey(currentKey);
         this.lastRoundEncryption(currentKey);
-        System.out.println("\n After addRoundKey \n" + this.toString());
+        //System.out.println("\n After addRoundKey \n" + this.toString());
 	}
 	
 	public void decrypt(int[] key){
@@ -124,11 +124,13 @@ public class Block {
 
 		int[] currentKey = new int[16];
         for (int j = 0; j<16; j++) {
-            currentKey[j] = expandedKey[(rounds-1+1)*4 + j/4][j%4]; //40-43
-            //System.out.print(currentKey[j] + " ");
+            currentKey[j] = expandedKey[(rounds)*4 + j/4][j%4]; //40-43
+            //System.out.print(String.format("%02X", currentKey[j]) + " ");
         }
 
-		this.addRoundKey(currentKey); //Add round key (original key) before going into first round
+		System.out.println(this.toString());
+		this.invAddRoundKey(currentKey); //Add round key (original key) before going into first round
+
 
 		for (int i = 0; i<rounds-1; i++) { //Do 9-13 rounds: byte substitution, shift rows, mix col, add round key
 
@@ -141,11 +143,11 @@ public class Block {
 		    }
 		    //block.addRoundKey(currentKey);
 		    this.regularRoundDecryption(currentKey);
-		    System.out.println("\n After addRoundKey \n" + this.toString());
+		    //System.out.println("\n After addRoundKey \n" + this.toString());
 		}
 
 		//Final round
-        System.out.println("-----Final Round-----");
+        //System.out.println("-----Final Round-----");
         //block.substituteBytes();
         //System.out.println("\n After byte substitution \n" + block.toString());
         //block.shiftRows();
@@ -156,7 +158,7 @@ public class Block {
         }
         //block.addRoundKey(currentKey);
         this.lastRoundDecryption(currentKey);
-        System.out.println("\n After addRoundKey \n" + this.toString());
+        //System.out.println("\n After addRoundKey \n" + this.toString());
 	}
 
 	//
@@ -228,12 +230,14 @@ public class Block {
 		for(int j=0;j<4;j++){
 			mixColumn(j,ENCRYPTION_MATRIX);
 		}
+		////System.out.println("Mixcols Encr  \n"+this.toString());
 	}
 	
 	public void mixColumnsDecryption(){
 		for(int j=0;j<4;j++){
 			mixColumn(j,DECRYPTION_MATRIX);
 		}
+		//System.out.println("Mixcols Decr  \n"+this.toString());
 	}
 	
 	public void shiftRowsEncryption(){
@@ -244,6 +248,7 @@ public class Block {
 			}
 		}
 		data = newMatrix;
+		//System.out.println("ShiftRows Encr \n "+this.toString()); //Works
 	}
 	public void shiftRowsDecryption(){
 		int[][] newMatrix = new int[4][4];
@@ -253,6 +258,7 @@ public class Block {
 			}
 		}
 		data = newMatrix;
+		//System.out.println("ShiftRows Decr  \n"+this.toString());
 	}
 	
 	public String toString(){
@@ -272,7 +278,7 @@ public class Block {
 		int i,j;
 		for(i=0;i<4;i++){
 			for(j=0;j<4;j++){
-				res += String.format("%02X", data[i][j])+" ";
+				res += String.format("%02X", data[j][i])+" ";
 			}
 		}
 		return res;
@@ -287,6 +293,7 @@ public class Block {
                 k++;
             }
         }
+		//System.out.println("AddRoundKey Encr  \n" +this.toString());
     }
 
 	//Substitute all bytes in data array
@@ -296,13 +303,15 @@ public class Block {
 
         //Substitute bytes, fist 4 bits = row, last 4 bits = column
         for (int i=0; i<4; i++) {
-            //System.out.print("[ ");
+            ////System.out.print("[ ");
             for (int j=0;j<4;j++) {
                 data[i][j] = substituteByte(data[i][j]);
-                //System.out.print(Integer.toHexString(data[i][j]) + " ");
+                ////System.out.print(Integer.toHexString(data[i][j]) + " ");
             }
-            //System.out.println("]");
+            ////System.out.println("]");
         }
+
+		//System.out.println("SubstBytes Encr  \n"+this.toString());
 
     }
 
@@ -340,7 +349,8 @@ public class Block {
 
 	//The same as addRoundKey
     public void invAddRoundKey(int[] key) {
-       addRoundKey(key);
+       this.addRoundKey(key);
+	   //System.out.println("invAddRoundKey  \n"+this.toString());
     }
 
 
@@ -355,6 +365,7 @@ public class Block {
             }
             //System.out.println("]");
         }
+		//System.out.println("invSubstBytes  \n"+this.toString());
 	}
 
 	private int invSubstituteByte(int toBeSubst) {
