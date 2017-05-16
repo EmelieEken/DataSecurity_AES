@@ -104,6 +104,61 @@ public class Block {
         System.out.println("\n After addRoundKey \n" + this.toString());
 	}
 	
+	public void decrypt(int[] key){
+		
+		//Expand key
+		int[][] expandedKey = KeyManipulation.keyExpansion(key);
+		int rounds = 0;
+
+		switch(key.length) {
+		    case 16: 
+			rounds = 10;
+			break;
+		    case 24:
+			rounds = 12;
+			break;
+		    case 32:
+			rounds = 14;
+			break;
+		}
+
+		int[] currentKey = new int[16];
+        for (int j = 0; j<16; j++) {
+            currentKey[j] = expandedKey[(rounds-1+1)*4 + j/4][j%4]; //40-43
+            //System.out.print(currentKey[j] + " ");
+        }
+
+		this.addRoundKey(currentKey); //Add round key (original key) before going into first round
+
+		for (int i = 0; i<rounds-1; i++) { //Do 9-13 rounds: byte substitution, shift rows, mix col, add round key
+
+		    currentKey = new int[16];
+		    //System.out.print("\nCurrent key");
+		    for (int j = 0; j<16; j++) {
+
+			currentKey[j] = expandedKey[(rounds-(i+1))*4 + j/4][j%4]; //Check this
+			//System.out.print(currentKey[j] + " ");
+		    }
+		    //block.addRoundKey(currentKey);
+		    this.regularRoundDecryption(currentKey);
+		    System.out.println("\n After addRoundKey \n" + this.toString());
+		}
+
+		//Final round
+        System.out.println("-----Final Round-----");
+        //block.substituteBytes();
+        //System.out.println("\n After byte substitution \n" + block.toString());
+        //block.shiftRows();
+        currentKey = new int[16];
+        for (int j = 0; j<16; j++) {
+            currentKey[j] = expandedKey[0 + j/4][j%4]; 
+            //System.out.print(currentKey[j] + " ");
+        }
+        //block.addRoundKey(currentKey);
+        this.lastRoundDecryption(currentKey);
+        System.out.println("\n After addRoundKey \n" + this.toString());
+	}
+
 	//
 	public void regularRoundEncryption(int[] key){
 		this.substituteBytes();
@@ -194,7 +249,7 @@ public class Block {
 		int[][] newMatrix = new int[4][4];
 		for(int i=0;i<4;i++){
 			for(int j=0;j<4;j++){
-				newMatrix[i][j] = data[i][(j-i) % 4]; 
+				newMatrix[i][j] = data[i][((j-i)+4) % 4]; 
 			}
 		}
 		data = newMatrix;
