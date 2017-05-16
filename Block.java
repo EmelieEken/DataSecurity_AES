@@ -34,6 +34,16 @@ public class Block {
 		}
 	}
 	
+	//copy constructor
+	public Block(Block b){
+		data = new int[4][4];
+		for(int i=0;i<4;i++){
+			for(int j=0;j<4;j++){
+				data[i][j] = b.data[i][j];
+			}
+		}
+	}
+	
 	// return a block which is the XOR of the this and b
 	public Block add(Block b){
 		Block res = new Block();
