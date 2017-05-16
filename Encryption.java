@@ -36,9 +36,12 @@ public class Encryption{
         }
 
         if (modeOfOperation == 0 && (initVector.length != 1 || initVector[0] != 0)) {
+            System.out.println(initVector[0]);
             System.out.println("Initialisation vector must be set to 0 for ECB mode");
             System.exit(0);
-        } else if (initVector.length != 16) {
+        }
+        
+        if (modeOfOperation < 4 && modeOfOperation > 0 && initVector.length != 16) {
             System.out.println("Initialisation vector must be 16 bytes long for CBC, CFB, and OFB mode");
             System.exit(0);
         }
