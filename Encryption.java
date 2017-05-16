@@ -70,9 +70,12 @@ public class Encryption{
             }
 
         } else if (modeOfOperation == 1) { //CFB
-
+            //EncryptBlockCFB();
         } else if (modeOfOperation == 2) { //CBC
-
+            //EncryptBlockCBC(blocks[0], initVector);
+            for (int i = 1; i<blocks.length) {
+                //EncryptBlockCBC(blocks[i], blocks[i-1]);
+            }
         } else if (modeOfOperation == 3) { //OFB
 
         } else {
