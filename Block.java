@@ -75,7 +75,7 @@ public class Block {
 
 		this.addRoundKey(key); //Add round key (original key) before going into first round
 
-		for (int i = 0; i<rounds-1; i++) { //Do 9 rounds: byte substitution, shift rows, mix col, add round key
+		for (int i = 0; i<rounds-1; i++) { //Do 9-13 rounds: byte substitution, shift rows, mix col, add round key
 
 		    int[] currentKey = new int[16];
 		    //System.out.print("\nCurrent key");
@@ -88,6 +88,20 @@ public class Block {
 		    this.regularRoundEncryption(currentKey);
 		    System.out.println("\n After addRoundKey \n" + this.toString());
 		}
+
+		//Final round
+        System.out.println("-----Final Round-----");
+        //block.substituteBytes();
+        //System.out.println("\n After byte substitution \n" + block.toString());
+        //block.shiftRows();
+        int[] currentKey = new int[16];
+        for (int j = 0; j<16; j++) {
+            currentKey[j] = expandedKey[(rounds-1+1)*4 + j/4][j%4]; 
+            //System.out.print(currentKey[j] + " ");
+        }
+        //block.addRoundKey(currentKey);
+        this.lastRoundEncryption(currentKey);
+        System.out.println("\n After addRoundKey \n" + this.toString());
 	}
 	
 	//
