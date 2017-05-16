@@ -40,12 +40,16 @@ public class KeyManipulation{
                 //System.out.println();
                 for(int j=0;j<4;j++) {
                     expandedKey[i][j] = expandedKey[i-1][(j+1)%4]; //Shift rows
+                    //System.out.print(Integer.toHexString(expandedKey[i][j]) + " ");
                     expandedKey[i][j] = Block.substituteByte(expandedKey[i][j]); //Subst in S-box
+                    //System.out.print(Integer.toHexString(expandedKey[i][j]) + " ");
                     if (j == 0) {//XOR Round constant
                         expandedKey[i][j] = expandedKey[i][j]^roundConstant[i/4-1];
                     }
+                    expandedKey[i][j] = expandedKey[i][j]^expandedKey[i-4][j];
                     //System.out.print(Integer.toHexString(expandedKey[i][j]) + " ");
                 }
+
 
             } else {
                 for (int j=0; j<4; j++){
