@@ -67,7 +67,7 @@ public class KeyManipulation{
         int[] roundConstant = new int[rounds];
         roundConstant[0] = 0x01;
         Polynomial p2 = Polynomial.fromByte(0x02);
-        System.out.print("\nRound constants: " + Integer.toHexString(roundConstant[0]) + " ");
+        //System.out.print("\nRound constants: " + Integer.toHexString(roundConstant[0]) + " ");
         //current = previous*2 in GF(2^8)
         for (int i=1;i<roundConstant.length;i++) {
             if (2*roundConstant[i-1]>255) {
@@ -76,9 +76,9 @@ public class KeyManipulation{
             } else {
                 roundConstant[i] = 2*roundConstant[i-1];
             }
-            System.out.print(Integer.toHexString(roundConstant[i]) + " ");
+            //System.out.print(Integer.toHexString(roundConstant[i]) + " ");
         }
-        System.out.println("\n");
+        //System.out.println("\n");
 
         return roundConstant;
     }
