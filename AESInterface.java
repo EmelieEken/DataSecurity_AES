@@ -59,6 +59,11 @@ public class AESInterface {
              if (encryptionOrDecryption == 0) {
                  Encryption encr = new Encryption(modeOfOperation, transmissionSize, initVector);
                  System.out.println(encr.Encrypt(text, key));
+                 //String cipherTextStr = encr.Encrypt(text, key);
+                 //int[] cipherText = stringToHex(cipherTextStr);
+                 //System.out.println(cipherText);
+                 //Decryption decr = new Decryption(modeOfOperation, transmissionSize, initVector);
+                 //System.out.println(decr.Decrypt(cipherText, key));
              } else if (encryptionOrDecryption == 1) {
                  Decryption decr = new Decryption(modeOfOperation, transmissionSize, initVector);
                  System.out.println(decr.Decrypt(text, key));
