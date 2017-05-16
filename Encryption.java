@@ -24,13 +24,6 @@ public class Encryption{
     public String Encrypt(int[] text, int[] key) {
         //encryptionFunctions encr = new encryptionFunctions();
 
-        //Print text
-        // System.out.print("Text: \n [ " );
-        // for(int i=0; i<text.length;i++){
-        //     System.out.print(text[i] + " ");
-        // }
-        // System.out.println("]" );
-
         if (text.length % 16 != 0) {
             //Change to add padding?
             System.out.println("Text must be a multiple of 16 long");
