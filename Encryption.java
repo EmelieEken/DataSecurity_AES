@@ -3,7 +3,6 @@
 
 public class Encryption{
     private Block[] blocks; //Array of Blocks to be encrypted (from text)
-    //private int[][][] blocks;
     private int modeOfOperation;
     private int transmissionSize;
     private int[] initVector;
@@ -11,8 +10,6 @@ public class Encryption{
 
     //Default constructor
     public Encryption() {
-        //this.blocks = new Block[]();
-        //this.blocks = new int[0][0][0];
         this.modeOfOperation = 0;
         this.transmissionSize = 0;
         this.initVector = new int[0];
@@ -63,23 +60,28 @@ public class Encryption{
         }
 
 
-        if (modeOfOperation == 0) { //ECB, Electronic code book. Same key used for all blocks
-            for (int i = 0; i<text.length/16; i++) {
-                EncryptBlockECB(blocks[i], key);
-                //blocks[i].toString();
-            }
+        switch (modeOfOperation) { //ECB, Electronic code book. Same key used for all blocks
+            case 0:
+                //for (int i = 0; i<text.length/16; i++) {
+                    EncryptBlockECB(blocks, key);
+                    //blocks[i].toString();
+                //}
+                break;
 
-        } else if (modeOfOperation == 1) { //CFB
+            case 1: //CFB
             //EncryptBlockCFB();
-        } else if (modeOfOperation == 2) { //CBC
+                break;
+            case 2:  //CBC
             //EncryptBlockCBC(blocks[0], initVector);
-            for (int i = 1; i<blocks.length) {
+                for (int i = 1; i<blocks.length; i++) {
                 //EncryptBlockCBC(blocks[i], blocks[i-1]);
             }
-        } else if (modeOfOperation == 3) { //OFB
-
-        } else {
-            System.out.println("Mode of operation must be 0,1,2, or 3 for ECB, CFB, CBC, or OFB");
+            break;
+            case 3: //OFB
+                break;
+            default:
+                System.out.println("Mode of operation must be 0,1,2, or 3 for ECB, CFB, CBC, or OFB");
+                break;
         }
 
         //Print blocks
@@ -101,58 +103,62 @@ public class Encryption{
     //create functions for all modeOfOperation
 
     //ECB
-    private static void EncryptBlockECB(Block block, int[] key) {
+    private static void EncryptBlockECB(Block[] block, int[] key) {
+
+        for (int i=0; i<block.length; i++) {
+            block[i].encrypt(key);
+        }
 
         //Expand key
-        int[][] expandedKey = encryptionFunctions.keyExpansion(key);
+        // int[][] expandedKey = encryptionFunctions.keyExpansion(key);
 
-        int rounds = 0;
+        // int rounds = 0;
 
-        switch(key.length) {
-            case 16: 
-                rounds = 10;
-                break;
-            case 24:
-                rounds = 12;
-                break;
-            case 32:
-                rounds = 14;
-                break;
-        }
+        // switch(key.length) {
+        //     case 16: 
+        //         rounds = 10;
+        //         break;
+        //     case 24:
+        //         rounds = 12;
+        //         break;
+        //     case 32:
+        //         rounds = 14;
+        //         break;
+        // }
 
-        block.addRoundKey(key); //Add round key (original key) before going into first round
+        // block.addRoundKey(key); //Add round key (original key) before going into first round
 
-        for (int i = 0; i<rounds-1; i++) { //Do 9 rounds: byte sustitution, shift rows, mix col, add round key
+        // for (int i = 0; i<rounds-1; i++) { //Do 9 rounds: byte sustitution, shift rows, mix col, add round key
             
-            //block.substituteBytes();
-            //System.out.println("\n After byte substitution \n" + block.toString());
-            //block.shiftRows();
-            //block.mixCols();
-            int[] currentKey = new int[16];
-            //System.out.print("\nCurrent key");
-            for (int j = 0; j<16; j++) {
+        //     //block.substituteBytes();
+        //     //System.out.println("\n After byte substitution \n" + block.toString());
+        //     //block.shiftRows();
+        //     //block.mixCols();
+        //     int[] currentKey = new int[16];
+        //     //System.out.print("\nCurrent key");
+        //     for (int j = 0; j<16; j++) {
 
-                currentKey[j] = expandedKey[(i+1)*4 + j/4][j%4]; 
-                //System.out.print(currentKey[j] + " ");
-            }
-            //block.addRoundKey(currentKey);
-            block.regularRoundEncryption(currentKey);
-            System.out.println("\n After addRoundKey \n" + block.toString());
-        }
+        //         currentKey[j] = expandedKey[(i+1)*4 + j/4][j%4]; 
+        //         //System.out.print(currentKey[j] + " ");
+        //     }
+        //     //block.addRoundKey(currentKey);
+        //     block.regularRoundEncryption(currentKey);
+        //     System.out.println("\n After addRoundKey \n" + block.toString());
+        // }
 
-        //Round 10 
-        System.out.println("-----Final Round-----");
-        //block.substituteBytes();
-        //System.out.println("\n After byte substitution \n" + block.toString());
-        //block.shiftRows();
-        int[] currentKey = new int[16];
-        for (int j = 0; j<16; j++) {
-            currentKey[j] = expandedKey[(9+1)*4 + j/4][j%4]; 
-            //System.out.print(currentKey[j] + " ");
-        }
-        //block.addRoundKey(currentKey);
-        block.lastRoundEncryption(currentKey);
-        System.out.println("\n After addRoundKey \n" + block.toString());
+        // //Round 10 
+        // System.out.println("-----Final Round-----");
+        // //block.substituteBytes();
+        // //System.out.println("\n After byte substitution \n" + block.toString());
+        // //block.shiftRows();
+        // int[] currentKey = new int[16];
+        // for (int j = 0; j<16; j++) {
+        //     currentKey[j] = expandedKey[(9+1)*4 + j/4][j%4]; 
+        //     //System.out.print(currentKey[j] + " ");
+        // }
+        // //block.addRoundKey(currentKey);
+        // block.lastRoundEncryption(currentKey);
+        // System.out.println("\n After addRoundKey \n" + block.toString());
     }
 
     // public static void main(String[] args) {
