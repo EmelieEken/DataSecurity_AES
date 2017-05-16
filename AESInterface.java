@@ -60,7 +60,8 @@ public class AESInterface {
                  Encryption encr = new Encryption(modeOfOperation, transmissionSize, initVector);
                  System.out.println(encr.Encrypt(text, key));
              } else if (encryptionOrDecryption == 1) {
-                 //Decypt
+                 Decryption decr = new Decryption(modeOfOperation, transmissionSize, initVector);
+                 System.out.println(decr.Decrypt(text, key));
              } else {
                  System.out.println("First line must be a 0 for encryption or 1 for decryption");
                  System.exit(0);
