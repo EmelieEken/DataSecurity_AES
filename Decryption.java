@@ -128,8 +128,6 @@ public class Decryption{
         for (int i=0; i<blocks.length; i++) {
             blocks[i].decrypt(key);
         }
-
-    }
     
     }
     
@@ -169,9 +167,9 @@ public class Decryption{
             int[] c_i = new int[transmissionSize]; //Ciphertext to be used in next round in shift register
             for (int j=0; j<transmissionSize; j++) {
                 c_i[j] = text[i*transmissionSize + j]; //Save ciphertext bit to use in shift register
-                System.out.print( String.format("%02X",c_i[i]) + " ");
+                //System.out.print( String.format("%02X",c_i[j]) + " ");
                 text[i*transmissionSize + j] = text[i*transmissionSize + j]^selectedBytes[j]; //XOR with plaintext 
-                System.out.print( String.format("%02X",c_i[i]) + " ");
+                //System.out.print( String.format("%02X",c_i[j]) + " ");
                 
             }
             initBlock = new Block(shiftRegister(initBlock, c_i)); //Prepare for next round
@@ -211,7 +209,6 @@ public class Decryption{
         }
 
         return newIV;
-    }
 
     }
 
