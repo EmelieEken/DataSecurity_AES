@@ -24,6 +24,7 @@ public class Encryption{
     public String Encrypt(int[] text, int[] key) {
         //encryptionFunctions encr = new encryptionFunctions();
 
+    	//prerequisites
         if (text.length % 16 != 0) {
             //Change to add padding?
             System.out.println("Text must be a multiple of 16 long");
@@ -46,7 +47,7 @@ public class Encryption{
             System.exit(0);
         }
 
-        //Create blocks
+        //Create blocks (array of Block)
         //System.out.println("Dividing into blocks");
         blocks = new Block[text.length/16]; //Initialise array of textblocks for encryption
         for (int i=0; i<text.length/16; i++) {
@@ -107,10 +108,10 @@ public class Encryption{
     //create functions for all modeOfOperation
 
     //ECB
-    private static void EncryptBlockECB(Block[] block, int[] key) {
+    private static void EncryptBlockECB(Block[] blocks, int[] key) {
 
-        for (int i=0; i<block.length; i++) {
-            block[i].encrypt(key);
+        for (int i=0; i<blocks.length; i++) {
+            blocks[i].encrypt(key);
         }
 
         //Expand key
@@ -172,6 +173,20 @@ public class Encryption{
     //     Encryption encrypt = new Encryption(0,0,in);
     //     System.out.println(encrypt.Encrypt(plainText, key));
     // }
+    
+    
+    //not static because it uses initVector
+    private void EncryptBlockCBC(Block[] blocks, int[] key) {
+
+    	Block[] newBlocks = new Block[blocks.length];
+    	Block tmp = new Block(initVector);
+        for (int i=0; i<blocks.length; i++) {
+        	tmp = tmp.add(blocks[i]);
+        	tmp.encrypt(key);
+            newBlocks[i] = new Block(tmp);
+        }
+        blocks = newBlocks;
+    }
 
 
 }
