@@ -1,6 +1,3 @@
-//package data_security_assignment_2;
-//import data_security_assignment_2.*;
-
 public class Encryption{
     private Block[] blocks; //Array of Blocks to be encrypted (from text)
     private int modeOfOperation;
@@ -22,7 +19,6 @@ public class Encryption{
     }
 
     public String Encrypt(int[] text, int[] key) {
-        //encryptionFunctions encr = new encryptionFunctions();
 
     	//prerequisites
         if (text.length % 16 != 0) {
@@ -48,7 +44,6 @@ public class Encryption{
         }
 
         //Create blocks (array of Block)
-        //System.out.println("Dividing into blocks");
         blocks = new Block[text.length/16]; //Initialise array of textblocks for encryption
         for (int i=0; i<text.length/16; i++) {
             int n=0;
@@ -67,10 +62,7 @@ public class Encryption{
 
         switch (modeOfOperation) { //ECB, Electronic code book. Same key used for all blocks
             case 0:
-                //for (int i = 0; i<text.length/16; i++) {
                 EncryptBlockECB(blocks, key);
-                //blocks[i].toString();
-                //}
                 break;
 
             case 1: //CFB
@@ -80,6 +72,7 @@ public class Encryption{
             	EncryptBlockCBC(blocks, key);
                 break;
             case 3: //OFB
+                EncryptBlockOFB();
                 break;
             default:
                 System.out.println("Mode of operation must be 0,1,2, or 3 for ECB, CFB, CBC, or OFB");
@@ -93,74 +86,25 @@ public class Encryption{
 //        }
             
 
-        //Encrypt every block following the given modeOfOperation (call functions below)
+        //Read final ciphertext from the blocks
         String cipherText = "";
         for (int i=0; i<text.length/16; i++) {
             cipherText += blocks[i].toStringOneLine(); 
         }
 
-        return cipherText; //Return encrypted 
+        return cipherText; //Return encrypted text
     }
 
-    //create functions for all modeOfOperation
 
-    //ECB
+    //Functions for all modeOfOperation
+
+    //ECB ecryption, All blocks encrypted independent of each other
     private static void EncryptBlockECB(Block[] blocks, int[] key) {
 
         for (int i=0; i<blocks.length; i++) {
             blocks[i].encrypt(key);
         }
 
-        //Expand key
-        // int[][] expandedKey = encryptionFunctions.keyExpansion(key);
-
-        // int rounds = 0;
-
-        // switch(key.length) {
-        //     case 16: 
-        //         rounds = 10;
-        //         break;
-        //     case 24:
-        //         rounds = 12;
-        //         break;
-        //     case 32:
-        //         rounds = 14;
-        //         break;
-        // }
-
-        // block.addRoundKey(key); //Add round key (original key) before going into first round
-
-        // for (int i = 0; i<rounds-1; i++) { //Do 9 rounds: byte sustitution, shift rows, mix col, add round key
-            
-        //     //block.substituteBytes();
-        //     //System.out.println("\n After byte substitution \n" + block.toString());
-        //     //block.shiftRows();
-        //     //block.mixCols();
-        //     int[] currentKey = new int[16];
-        //     //System.out.print("\nCurrent key");
-        //     for (int j = 0; j<16; j++) {
-
-        //         currentKey[j] = expandedKey[(i+1)*4 + j/4][j%4]; 
-        //         //System.out.print(currentKey[j] + " ");
-        //     }
-        //     //block.addRoundKey(currentKey);
-        //     block.regularRoundEncryption(currentKey);
-        //     System.out.println("\n After addRoundKey \n" + block.toString());
-        // }
-
-        // //Round 10 
-        // System.out.println("-----Final Round-----");
-        // //block.substituteBytes();
-        // //System.out.println("\n After byte substitution \n" + block.toString());
-        // //block.shiftRows();
-        // int[] currentKey = new int[16];
-        // for (int j = 0; j<16; j++) {
-        //     currentKey[j] = expandedKey[(9+1)*4 + j/4][j%4]; 
-        //     //System.out.print(currentKey[j] + " ");
-        // }
-        // //block.addRoundKey(currentKey);
-        // block.lastRoundEncryption(currentKey);
-        // System.out.println("\n After addRoundKey \n" + block.toString());
     }  
     
     //not static because it uses initVector
@@ -176,12 +120,13 @@ public class Encryption{
 //        blocks = newBlocks;
     }
 
-//     public static void main(String[] args) {
-//         int[] in = {0};
-//         int[] plainText = {0x56, 0xA2, 0x5F, 0x9F, 0x5F, 0x5F, 0x8F, 0x5F, 0x5F, 0x52, 0x5F, 0x5F, 0x5F, 0x5F, 0x4F, 0x5F, 0x46, 0xA2, 0x5F, 0x9F, 0x5F, 0x5F, 0x8F, 0x5F, 0x5F, 0x52, 0x5F, 0x5F, 0x5F, 0x5F, 0x4F, 0x5F};
-//         int[] key = {0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0xE5};
-//         Encryption encrypt = new Encryption(0,0,in);
-//         System.out.println(encrypt.Encrypt(plainText, key));
-//     }
+    private void EncryptBlockCFB() {
+
+    }
+
+    private void EncryptBlockOFB() {
+        
+    }
+
     
 }
