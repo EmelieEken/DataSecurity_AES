@@ -1,3 +1,4 @@
+//package data_security_assignment_2;
 
 public class Decryption{
     private Block[] blocks; //Array of Blocks to be Decrypted (from text)
@@ -97,21 +98,38 @@ public class Decryption{
     //create functions for all modeOfOperation
 
     //ECB
-    private static void DecryptBlockECB(Block[] block, int[] key) {
+    private static void DecryptBlockECB(Block[] blocks, int[] key) {
 
-        for (int i=0; i<block.length; i++) {
-            block[i].decrypt(key);
+        for (int i=0; i<blocks.length; i++) {
+            blocks[i].decrypt(key);
         }
 
     }
+    
+    //CBC
+    // TODO to be tested
+    private void DecryptBlockCBC(Block[] blocks, int[] key) {
 
-    // public static void main(String[] args) {
-    //     int[] in = {0};
-    //     int[] plainText = {0x56, 0xA2, 0x5F, 0x9F, 0x5F, 0x5F, 0x8F, 0x5F, 0x5F, 0x52, 0x5F, 0x5F, 0x5F, 0x5F, 0x4F, 0x5F, 0x46, 0xA2, 0x5F, 0x9F, 0x5F, 0x5F, 0x8F, 0x5F, 0x5F, 0x52, 0x5F, 0x5F, 0x5F, 0x5F, 0x4F, 0x5F};
-    //     int[] key = {0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0xE5};
-    //     Decryption Decrypt = new Decryption(0,0,in);
-    //     System.out.println(Decrypt.Decrypt(plainText, key));
-    // }
+    	Block[] newBlocks = new Block[blocks.length];
+    	Block tmp = new Block(blocks[0]);
+    	tmp.decrypt(key);
+    	tmp = tmp.add(new Block(initVector));
+    			
+        for (int i=1; i<blocks.length; i++) {
+        	tmp = new Block(blocks[i]);
+        	tmp.decrypt(key);
+        	newBlocks[i] = tmp.add(newBlocks[i-1]);
+        }
+        blocks = newBlocks;
+    }
+
+//     public static void main(String[] args) {
+//         int[] in = {0};
+//         int[] plainText = {0x56, 0xA2, 0x5F, 0x9F, 0x5F, 0x5F, 0x8F, 0x5F, 0x5F, 0x52, 0x5F, 0x5F, 0x5F, 0x5F, 0x4F, 0x5F, 0x46, 0xA2, 0x5F, 0x9F, 0x5F, 0x5F, 0x8F, 0x5F, 0x5F, 0x52, 0x5F, 0x5F, 0x5F, 0x5F, 0x4F, 0x5F};
+//         int[] key = {0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0xE5};
+//         Decryption Decrypt = new Decryption(0,0,in);
+//         System.out.println(Decrypt.Decrypt(plainText, key));
+//     }
 
 
 }
