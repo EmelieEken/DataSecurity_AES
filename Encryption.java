@@ -77,10 +77,7 @@ public class Encryption{
             //EncryptBlockCFB();
                 break;
             case 2:  //CBC
-            //EncryptBlockCBC(blocks[0], initVector);
-                for (int i = 1; i<blocks.length; i++) {
-                //EncryptBlockCBC(blocks[i], blocks[i-1]);
-                }
+            	EncryptBlockCBC(blocks, key);
                 break;
             case 3: //OFB
                 break;
@@ -89,11 +86,11 @@ public class Encryption{
                 break;
         }
 
-        //Print blocks
-        System.out.print("\nAfter encryption: \n");
-        for (int i=0; i<text.length/16; i++) {
-            blocks[i].toString();
-        }
+//        //Print blocks
+//        System.out.print("\nAfter encryption: \n");
+//        for (int i=0; i<text.length/16; i++) {
+//            blocks[i].toString();
+//        }
             
 
         //Encrypt every block following the given modeOfOperation (call functions below)
@@ -164,29 +161,27 @@ public class Encryption{
         // //block.addRoundKey(currentKey);
         // block.lastRoundEncryption(currentKey);
         // System.out.println("\n After addRoundKey \n" + block.toString());
-    }
-
-    // public static void main(String[] args) {
-    //     int[] in = {0};
-    //     int[] plainText = {0x56, 0xA2, 0x5F, 0x9F, 0x5F, 0x5F, 0x8F, 0x5F, 0x5F, 0x52, 0x5F, 0x5F, 0x5F, 0x5F, 0x4F, 0x5F, 0x46, 0xA2, 0x5F, 0x9F, 0x5F, 0x5F, 0x8F, 0x5F, 0x5F, 0x52, 0x5F, 0x5F, 0x5F, 0x5F, 0x4F, 0x5F};
-    //     int[] key = {0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0xE5};
-    //     Encryption encrypt = new Encryption(0,0,in);
-    //     System.out.println(encrypt.Encrypt(plainText, key));
-    // }
-    
+    }  
     
     //not static because it uses initVector
     private void EncryptBlockCBC(Block[] blocks, int[] key) {
 
-    	Block[] newBlocks = new Block[blocks.length];
+//    	Block[] newBlocks = new Block[blocks.length];
     	Block tmp = new Block(initVector);
         for (int i=0; i<blocks.length; i++) {
         	tmp = tmp.add(blocks[i]);
         	tmp.encrypt(key);
-            newBlocks[i] = new Block(tmp);
+            blocks[i] = new Block(tmp);
         }
-        blocks = newBlocks;
+//        blocks = newBlocks;
     }
 
-
+//     public static void main(String[] args) {
+//         int[] in = {0};
+//         int[] plainText = {0x56, 0xA2, 0x5F, 0x9F, 0x5F, 0x5F, 0x8F, 0x5F, 0x5F, 0x52, 0x5F, 0x5F, 0x5F, 0x5F, 0x4F, 0x5F, 0x46, 0xA2, 0x5F, 0x9F, 0x5F, 0x5F, 0x8F, 0x5F, 0x5F, 0x52, 0x5F, 0x5F, 0x5F, 0x5F, 0x4F, 0x5F};
+//         int[] key = {0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0x56, 0xA2, 0xE5};
+//         Encryption encrypt = new Encryption(0,0,in);
+//         System.out.println(encrypt.Encrypt(plainText, key));
+//     }
+    
 }
