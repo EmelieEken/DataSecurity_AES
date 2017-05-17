@@ -103,29 +103,29 @@ public class Decryption{
 
     }
     
-    //CBC
-    // TODO to be tested
-    private void DecryptBlockCBC(Block[] blocks, int[] key) {
-
-//    	Block[] newBlocks = new Block[blocks.length];
-    	
-    	// to be added at the next step
-    	Block cipherBlock = new Block(blocks[0]);
-    	Block tmpBlock = new Block(blocks[0]);
-    	
-    	tmpBlock.decrypt(key);
-    	tmpBlock = tmpBlock.add(new Block(initVector));
-    	blocks[0] = new Block(tmpBlock);
-    			
-        for (int i=1; i<blocks.length; i++) {
-        	tmpBlock = new Block(blocks[i]);
-        	tmpBlock.decrypt(key);
-        	tmpBlock = tmpBlock.add(cipherBlock);
-        	cipherBlock = new Block(blocks[i]);
-        	blocks[i] = new Block(tmpBlock);
-        }
-//        blocks = newBlocks;
     }
+    
+    //CBC
+    private void DecryptBlockCBC(Block[] blocks, int[] decKey) {
+    	
+    	Block c_i_1 = new Block(initVector);
+    	Block c_i;
+    	Block tmp;
+    	
+    	for(int i=0;i<blocks.length;i++){
+    		c_i = new Block(blocks[i]);
+    		tmp = new Block(blocks[i]);
+
+//    		System.out.println("----- step "+i+" -----");
+//    		System.out.println("c_i_1:\n"+c_i_1.toString());
+//    		System.out.println("c_i:\n"+c_i.toString());
+    		
+    		tmp.decrypt(decKey);
+//    		System.out.println("tmp after decryption:\n"+tmp.toString());
+    		blocks[i] = tmp.add(c_i_1);
+//    		System.out.println("new Block:\n"+blocks[i].toString());
+    		c_i_1 = new Block(c_i);
+    	}
 
     private void DecryptBlockCFB() {
 

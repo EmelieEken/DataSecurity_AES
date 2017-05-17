@@ -141,14 +141,12 @@ public class Encryption{
     //not static because it uses initVector
     private void EncryptBlockCBC(Block[] blocks, int[] key) {
 
-//    	Block[] newBlocks = new Block[blocks.length];
     	Block tmp = new Block(initVector);
         for (int i=0; i<blocks.length; i++) {
         	tmp = tmp.add(blocks[i]);
         	tmp.encrypt(key);
             blocks[i] = new Block(tmp);
         }
-//        blocks = newBlocks;
     }
 
     private void EncryptBlockCFB(int[] text ,int[] key) {
