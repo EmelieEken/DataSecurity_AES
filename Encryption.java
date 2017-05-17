@@ -72,7 +72,7 @@ public class Encryption{
             	EncryptBlockCBC(blocks, key);
                 break;
             case 3: //OFB
-                EncryptBlockOFB();
+                EncryptBlockOFB(blocks, key);
                 break;
             default:
                 System.out.println("Mode of operation must be 0,1,2, or 3 for ECB, CFB, CBC, or OFB");
@@ -124,7 +124,20 @@ public class Encryption{
 
     }
 
-    private void EncryptBlockOFB() {
+    private void EncryptBlockOFB(Block[] blocks, int[] key) {
+        //for (int i=0; i<initVector.length; i++) {
+        //    System.out.print(String.format("%02X",initVector[i]) + " ");
+        //}
+        
+        Block initBlock = new Block(this.initVector);
+        //System.out.print("\n" + initBlock.toString());
+
+        for (int i=0; i<blocks.length; i++) {
+            initBlock.encrypt(key); //Encrypt Nonce (= initVector)
+            blocks[i] = blocks[i].add(initBlock); //XOR first block and the encrypted nonce 
+        }
+        
+
         
     }
 
