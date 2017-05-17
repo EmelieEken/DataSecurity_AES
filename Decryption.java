@@ -67,10 +67,7 @@ public class Decryption{
                 //DecryptBlockCFB();
                 break;
             case 2:  //CBC
-                //DecryptBlockCBC(blocks[0], initVector);
-                //for (int i = 1; i<blocks.length; i++) {
-                //DecryptBlockCBC(blocks[i], blocks[i-1]);
-                //}
+                DecryptBlockCBC(blocks, initVector);
                 break;
             case 3: //OFB
                 break;
@@ -79,11 +76,11 @@ public class Decryption{
                 break;
         }
 
-        //Print blocks
-        System.out.print("\nAfter Decryption: \n");
-        for (int i=0; i<text.length/16; i++) {
-            blocks[i].toString();
-        }
+//        //Print blocks
+//        System.out.print("\nAfter Decryption: \n");
+//        for (int i=0; i<text.length/16; i++) {
+//            blocks[i].toString();
+//        }
             
 
         //Decrypt every block following the given modeOfOperation (call functions below)
@@ -110,17 +107,24 @@ public class Decryption{
     // TODO to be tested
     private void DecryptBlockCBC(Block[] blocks, int[] key) {
 
-    	Block[] newBlocks = new Block[blocks.length];
-    	Block tmp = new Block(blocks[0]);
-    	tmp.decrypt(key);
-    	tmp = tmp.add(new Block(initVector));
+//    	Block[] newBlocks = new Block[blocks.length];
+    	
+    	// to be added at the next step
+    	Block cipherBlock = new Block(blocks[0]);
+    	Block tmpBlock = new Block(blocks[0]);
+    	
+    	tmpBlock.decrypt(key);
+    	tmpBlock = tmpBlock.add(new Block(initVector));
+    	blocks[0] = new Block(tmpBlock);
     			
         for (int i=1; i<blocks.length; i++) {
-        	tmp = new Block(blocks[i]);
-        	tmp.decrypt(key);
-        	newBlocks[i] = tmp.add(newBlocks[i-1]);
+        	tmpBlock = new Block(blocks[i]);
+        	tmpBlock.decrypt(key);
+        	tmpBlock = tmpBlock.add(cipherBlock);
+        	cipherBlock = new Block(blocks[i]);
+        	blocks[i] = new Block(tmpBlock);
         }
-        blocks = newBlocks;
+//        blocks = newBlocks;
     }
 
 //     public static void main(String[] args) {
