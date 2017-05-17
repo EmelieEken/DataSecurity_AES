@@ -51,6 +51,11 @@ public class Block {
 		}
 		return res;
 	}
+
+	//Get element i
+	public int get(int i) {
+		return this.data[i%4][i/4];
+	}
 	
 	public void encrypt(int[] key){
 		
