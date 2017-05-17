@@ -32,7 +32,7 @@ public class Decryption{
         }
 
         if (modeOfOperation == 0 && (initVector.length != 1 || initVector[0] != 0)) {
-            System.out.println(initVector[0]);
+            //System.out.println(initVector[0]);
             System.out.println("Initialisation vector must be set to 0 for ECB mode");
             System.exit(0);
         }
