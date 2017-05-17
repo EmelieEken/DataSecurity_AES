@@ -41,6 +41,17 @@ public class Decryption{
             System.exit(0);
         }
 
+        if (modeOfOperation == 0 && (initVector.length != 1 || initVector[0] != 0)) {
+            System.out.println(initVector[0]);
+            System.out.println("Initialisation vector must be set to 0 for ECB mode");
+            System.exit(0);
+        }
+        
+        if (modeOfOperation < 4 && modeOfOperation > 0 && initVector.length != 16) {
+            System.out.println("Initialisation vector must be 16 bytes long for CBC, CFB, and OFB mode");
+            System.exit(0);
+        }
+        
         //Create blocks
         //System.out.println("Dividing into blocks");
         blocks = new Block[text.length/16]; //Initialise array of textblocks for Decryption
