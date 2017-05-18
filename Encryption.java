@@ -20,8 +20,8 @@ public class Encryption{
 
     public String Encrypt(int[] text, int[] key) {
 
-    	//Prerequisites
-        if (text.length % 16 != 0) { //Or according to transmission size?
+    	// Checking the prerequisites
+        if (text.length % 16 != 0) {
             //Change to add padding?
             System.out.println("Text must be a multiple of 16 long");
             System.exit(0);
@@ -109,12 +109,6 @@ public class Encryption{
                 System.out.println("Mode of operation must be 0,1,2, or 3 for ECB, CFB, CBC, or OFB");
                 break;
         }
-
-//        //Print blocks
-//        System.out.print("\nAfter encryption: \n");
-//        for (int i=0; i<text.length/16; i++) {
-//            blocks[i].toString();
-//        }
             
 
         //Read final ciphertext from the blocks
@@ -138,11 +132,13 @@ public class Encryption{
 
     }  
     
+    // Encrypts the block array with CBC Method
     //not static because it uses initVector
     private void EncryptBlockCBC(Block[] blocks, int[] key) {
 
     	Block tmp = new Block(initVector);
         for (int i=0; i<blocks.length; i++) {
+            // add the previous encrypted block before encryot the current one
         	tmp = tmp.add(blocks[i]);
         	tmp.encrypt(key);
             blocks[i] = new Block(tmp);
@@ -152,7 +148,6 @@ public class Encryption{
     private void EncryptBlockCFB(int[] text ,int[] key) {
 
         Block initBlock = new Block(this.initVector);
-        //System.out.print("\n" + initBlock.toString());
 
         int[] currentText = new int[transmissionSize];
 
@@ -183,13 +178,6 @@ public class Encryption{
     }
 
     private int[] shiftRegister(Block previousEncrIV, int[] text) {
-        //System.out.println("\n\n" + previousEncrIV.toString());
-        //System.out.println("Ciphertext ");
-        //for (int i=0; i<text.length; i++) {
-        //    System.out.print(String.format("%02X",text[i]) + " ");;
-        //}
-
-        //System.out.println("\nnewIV ");
 
         int[] newIV = new int[16]; //16 = IV size
         for (int i=0; i<16-transmissionSize; i++) {

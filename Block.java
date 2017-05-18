@@ -3,6 +3,7 @@ public class Block {
 	//Every element is an integer representing a byte ( on the form: 0x5A ) stored in a 2d-array
 	private int[][] data;
 	
+	//some raw matrix to process the mix column operation
 	final static public int[][] ENCRYPTION_MATRIX = new int[][]{new int[]{2,3,1,1},new int[]{1,2,3,1},new int[]{1,1,2,3},new int[]{3,1,1,2}};
 	final static public int[][] DECRYPTION_MATRIX = new int[][]{new int[]{14,11,13,9},new int[]{9,14,11,13},new int[]{13,9,14,11},new int[]{11,13,9,14}};
 	
@@ -11,6 +12,7 @@ public class Block {
 		data = new int[4][4];
 	}
 	
+	// create  Block from an array of int representing bytes
 	public Block(int[] byteArray) {
 		data = new int[4][4];
 		int i,j;
@@ -22,6 +24,7 @@ public class Block {
 		}
 	}
 	
+	// create a block using the same byte Matrix
 	public Block(int[][] byteMatrix){
 		data = new int[4][4];
 		for(int i=0;i<4;i++){
@@ -58,6 +61,7 @@ public class Block {
 	}
 	
 	//Encrypt block with key
+	// this operation is independant from the operation mode
 	public void encrypt(int[] key){
 		
 		//Expand key
@@ -82,27 +86,23 @@ public class Block {
 		for (int i = 0; i<rounds-1; i++) { //Do 9-13 rounds: byte substitution, shift rows, mix col, add round key
 
 		    int[] currentKey = new int[16];
-		    //System.out.print("\nCurrent key");
 		    for (int j = 0; j<16; j++) {
 
 			currentKey[j] = expandedKey[(i+1)*4 + j/4][j%4]; 
-			//System.out.print(currentKey[j] + " ");
 		    }
 		    this.regularRoundEncryption(currentKey);
-		    //System.out.println("\n After addRoundKey \n" + this.toString());
 		}
 
 		//Final round
-        //System.out.println("-----Final Round-----");
         int[] currentKey = new int[16];
         for (int j = 0; j<16; j++) {
             currentKey[j] = expandedKey[(rounds-1+1)*4 + j/4][j%4]; 
-            //System.out.print(currentKey[j] + " ");
         }
         this.lastRoundEncryption(currentKey);
 	}
 	
 	//Decrypt block with key
+	// this is the reverse of the encryption method
 	public void decrypt(int[] key){
 		
 		//Expand key
@@ -122,35 +122,28 @@ public class Block {
 			break;
 		}
 
-		int[] currentKey = new int[16]; //Extract the key to use for this round from the expanded key
+	int[] currentKey = new int[16]; //Extract the key to use for this round from the expanded key
         for (int j = 0; j<16; j++) {
             currentKey[j] = expandedKey[(rounds)*4 + j/4][j%4]; //40-43
-            //System.out.print(String.format("%02X", currentKey[j]) + " ");
         }
 
-		//System.out.println(this.toString());
 		this.invAddRoundKey(currentKey); //Add round key (original key) before going into first round
 
 
 		for (int i = 0; i<rounds-1; i++) { //Do 9-13 rounds: byte substitution, shift rows, mix col, add round key
 
 		    currentKey = new int[16];
-		    //System.out.print("\nCurrent key");
 		    for (int j = 0; j<16; j++) {
 
 			currentKey[j] = expandedKey[(rounds-(i+1))*4 + j/4][j%4];
-			//System.out.print(currentKey[j] + " ");
 		    }
 		    this.regularRoundDecryption(currentKey);
-		    //System.out.println("\n After addRoundKey \n" + this.toString());
 		}
 
 		//Final round
-        //System.out.println("-----Final Round-----");
         currentKey = new int[16];
         for (int j = 0; j<16; j++) {
             currentKey[j] = expandedKey[0 + j/4][j%4]; 
-            //System.out.print(currentKey[j] + " ");
         }
         this.lastRoundDecryption(currentKey);
 	}
@@ -185,7 +178,7 @@ public class Block {
 		this.invAddRoundKey(key);
 	}
 	
-	//Mix column
+	//Mix column for one column, using the given matrix
 	public void mixColumn(int columnNum,int[][] multMatrix){
 		
 		//Build the new column
@@ -196,24 +189,15 @@ public class Block {
 				
 				// elt i,j from the multmatrix
 				Polynomial p1 = Polynomial.fromByte(multMatrix[i][j]);
-//				System.out.println("p1 "+i+": "+multMatrix[i][j]+" -> "+p1.toString());
 				
 				Polynomial p2 = Polynomial.fromByte(this.data[j][columnNum]);
-//				System.out.println("p2 "+i+": "+String.format("%02X", this.data[j][columnNum])+" -> "+p2.toString());
 				
 				Polynomial tmp = p1.mult(p2);
-//				System.out.println("tmp: "+tmp.toString()+" ("+String.format("%02X", tmp.toByte())+")");
 				tmp = tmp.divide(Polynomial.RED);
-//				System.out.println("tmp: "+tmp.toString());
-//				System.out.println("p: "+p.toString());
 				p = p.add(tmp);
-//				System.out.println("p: "+p.toString());
-//				System.out.println();
 			}
 			
-//			System.out.println("poly "+i+": "+p.toString());
 			newColumn[i] = p.toByte();
-//			System.out.println();
 		}
 				
 		// we replace the column in the block
@@ -222,20 +206,21 @@ public class Block {
 		}
 	}
 	
+	// mix column (all the columns) for encryption
 	public void mixColumnsEncryption(){
 		for(int j=0;j<4;j++){
 			mixColumn(j,ENCRYPTION_MATRIX);
 		}
-		//System.out.println("Mixcols Encr  \n"+this.toString());
 	}
 	
+	// mix column (all the columns) for decryption
 	public void mixColumnsDecryption(){
 		for(int j=0;j<4;j++){
 			mixColumn(j,DECRYPTION_MATRIX);
 		}
-		//System.out.println("Mixcols Decr  \n"+this.toString());
 	}
 	
+	// shift rows for encryption
 	public void shiftRowsEncryption(){
 		int[][] newMatrix = new int[4][4];
 		for(int i=0;i<4;i++){
@@ -244,8 +229,9 @@ public class Block {
 			}
 		}
 		data = newMatrix;
-		//System.out.println("ShiftRows Encr \n "+this.toString()); //Works
 	}
+	
+	// shift rows for decryption
 	public void shiftRowsDecryption(){
 		int[][] newMatrix = new int[4][4];
 		for(int i=0;i<4;i++){
@@ -254,9 +240,9 @@ public class Block {
 			}
 		}
 		data = newMatrix;
-		//System.out.println("ShiftRows Decr  \n"+this.toString());
 	}
 	
+	// return a String describing the matrix
 	public String toString(){
 		String res = "";
 		int i,j;
@@ -290,7 +276,6 @@ public class Block {
                 k++;
             }
         }
-		//System.out.println("AddRoundKey Encr  \n" +this.toString());
     }
 
 	//Substitute all bytes in data array
@@ -303,9 +288,6 @@ public class Block {
                 data[i][j] = substituteByte(data[i][j]);
             }
         }
-
-		//System.out.println("SubstBytes Encr  \n"+this.toString());
-
     }
 
 
@@ -357,7 +339,6 @@ public class Block {
             }
             
         }
-		//System.out.println("invSubstBytes  \n"+this.toString());
 	}
 
 	private int invSubstituteByte(int toBeSubst) {

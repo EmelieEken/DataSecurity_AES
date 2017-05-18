@@ -34,7 +34,6 @@ public class Decryption{
 
         //Check Initialisation vector
         if (modeOfOperation == 0 && (initVector.length != 1 || initVector[0] != 0)) { //Should be 0 if ECB used
-            //System.out.println(initVector[0]);
             System.out.println("Initialisation vector must be set to 0 for ECB mode");
             System.exit(0);
         }
@@ -94,7 +93,7 @@ public class Decryption{
                 }
                 break;
             case 2:  //CBC
-                DecryptBlockCBC(blocks, initVector);
+                DecryptBlockCBC(blocks, key);
                 break;
             case 3: //OFB
                 DecryptBlockOFB(blocks, key);
@@ -104,11 +103,6 @@ public class Decryption{
                 break;
         }
 
-//        //Print blocks
-//        System.out.print("\nAfter Decryption: \n");
-//        for (int i=0; i<text.length/16; i++) {
-//            blocks[i].toString();
-//        }
             
 
         //Decrypt every block following the given modeOfOperation (call functions below)
@@ -132,7 +126,7 @@ public class Decryption{
     
     }
     
-    //CBC
+    //decrypt the block array with the CBC method with the given key
     private void DecryptBlockCBC(Block[] blocks, int[] decKey) {
     	
     	Block c_i_1 = new Block(initVector);
@@ -143,14 +137,9 @@ public class Decryption{
     		c_i = new Block(blocks[i]);
     		tmp = new Block(blocks[i]);
 
-//    		System.out.println("----- step "+i+" -----");
-//    		System.out.println("c_i_1:\n"+c_i_1.toString());
-//    		System.out.println("c_i:\n"+c_i.toString());
-    		
     		tmp.decrypt(decKey);
-//    		System.out.println("tmp after decryption:\n"+tmp.toString());
+            // add the previous cipher block before adding it to the deciphered array
     		blocks[i] = tmp.add(c_i_1);
-//    		System.out.println("new Block:\n"+blocks[i].toString());
     		c_i_1 = new Block(c_i);
     	}
     }
@@ -191,13 +180,6 @@ public class Decryption{
     }
 
     private int[] shiftRegister(Block previousEncrIV, int[] text) {
-        //System.out.println("\n\n" + previousEncrIV.toString());
-        //System.out.println("Ciphertext ");
-        //for (int i=0; i<text.length; i++) {
-        //    System.out.print(String.format("%02X",text[i]) + " ");;
-        //}
-
-        //System.out.println("\nnewIV ");
 
         int[] newIV = new int[16]; //16 = IV size
         for (int i=0; i<16-transmissionSize; i++) {
