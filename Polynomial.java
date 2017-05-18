@@ -1,4 +1,4 @@
-//package data_security_assignment_2;
+//Class for implementing polynomial operations in GF(2^8)
 
 import java.util.Arrays;
 
