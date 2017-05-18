@@ -54,14 +54,10 @@ public class AESInterface {
              //Decide whether to encrypt or decrypt
              if (encryptionOrDecryption == 0) {
                  Encryption encr = new Encryption(modeOfOperation, transmissionSize, initVector);
-                 //System.out.println(encr.Encrypt(text, key)); //Out-comment to decrypt before printing
-                 String cipherTextStr = encr.Encrypt(text, key); //Un-comment to decrypt before printing
-                 int[] cipherText = stringToHex(cipherTextStr); //Un-comment to decrypt before printing
-                 Decryption decr = new Decryption(modeOfOperation, transmissionSize, initVector); //Un-comment to decrypt before printing
-                 System.out.println(decr.Decrypt(cipherText, key)); //Un-comment to decrypt before printing
+                 System.out.println(encr.Encrypt(text, key)); //Print ciphertext
              } else if (encryptionOrDecryption == 1) {
                  Decryption decr = new Decryption(modeOfOperation, transmissionSize, initVector);
-                 System.out.println(decr.Decrypt(text, key));
+                 System.out.println(decr.Decrypt(text, key)); //Print plaintext
              } else {
                  System.out.println("First line must be a 0 for encryption or 1 for decryption");
                  System.exit(0);
