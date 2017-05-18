@@ -1,3 +1,5 @@
+//Class for storing text and contains methods for encrypting/decrypting it
+
 public class Block {
 	
 	//Every element is an integer representing a byte ( on the form: 0x5A ) stored in a 2d-array
@@ -12,7 +14,7 @@ public class Block {
 		data = new int[4][4];
 	}
 	
-	// create  Block from an array of int representing bytes
+	//Create Block from an array of int representing bytes
 	public Block(int[] byteArray) {
 		data = new int[4][4];
 		int i,j;
@@ -24,7 +26,7 @@ public class Block {
 		}
 	}
 	
-	// create a block using the same byte Matrix
+	//Create a block using the same byte Matrix
 	public Block(int[][] byteMatrix){
 		data = new int[4][4];
 		for(int i=0;i<4;i++){
@@ -55,13 +57,13 @@ public class Block {
 		return res;
 	}
 
-	//Get element i
+	//Get element i in data block
 	public int get(int i) {
 		return this.data[i%4][i/4];
 	}
 	
 	//Encrypt block with key
-	// this operation is independant from the operation mode
+	//This function is independent of the operation mode
 	public void encrypt(int[] key){
 		
 		//Expand key
@@ -87,8 +89,7 @@ public class Block {
 
 		    int[] currentKey = new int[16];
 		    for (int j = 0; j<16; j++) {
-
-			currentKey[j] = expandedKey[(i+1)*4 + j/4][j%4]; 
+				currentKey[j] = expandedKey[(i+1)*4 + j/4][j%4]; 
 		    }
 		    this.regularRoundEncryption(currentKey);
 		}
@@ -124,17 +125,13 @@ public class Block {
 
 	int[] currentKey = new int[16]; //Extract the key to use for this round from the expanded key
         for (int j = 0; j<16; j++) {
-            currentKey[j] = expandedKey[(rounds)*4 + j/4][j%4]; //40-43
+            currentKey[j] = expandedKey[(rounds)*4 + j/4][j%4];
         }
-
 		this.invAddRoundKey(currentKey); //Add round key (original key) before going into first round
 
-
 		for (int i = 0; i<rounds-1; i++) { //Do 9-13 rounds: byte substitution, shift rows, mix col, add round key
-
 		    currentKey = new int[16];
 		    for (int j = 0; j<16; j++) {
-
 			currentKey[j] = expandedKey[(rounds-(i+1))*4 + j/4][j%4];
 		    }
 		    this.regularRoundDecryption(currentKey);
@@ -325,11 +322,10 @@ public class Block {
 	//The same as addRoundKey
     public void invAddRoundKey(int[] key) {
        this.addRoundKey(key);
-	   //System.out.println("invAddRoundKey  \n"+this.toString());
     }
 
 
-	//Inverse Substitute bytes, fist 4 bits = row, last 4 bits = column
+	//Inverse Substitute bytes, fist 4 bits = row, last 4 bits = column for whole block
 	public void invSubstituteBytes() {
 
         for (int i=0; i<4; i++) {
@@ -341,6 +337,7 @@ public class Block {
         }
 	}
 
+	//Inverse substitute byte, called by invSubstituteBytes
 	private int invSubstituteByte(int toBeSubst) {
 		int[][] siBox = {
 			{0x52, 0x09, 0x6a, 0xd5, 0x30, 0x36, 0xa5, 0x38, 0xbf, 0x40, 0xa3, 0x9e, 0x81, 0xf3, 0xd7, 0xfb},
