@@ -3,6 +3,7 @@ public class Block {
 	//Every element is an integer representing a byte ( on the form: 0x5A ) stored in a 2d-array
 	private int[][] data;
 	
+	//some raw matrix to process the mix column operation
 	final static public int[][] ENCRYPTION_MATRIX = new int[][]{new int[]{2,3,1,1},new int[]{1,2,3,1},new int[]{1,1,2,3},new int[]{3,1,1,2}};
 	final static public int[][] DECRYPTION_MATRIX = new int[][]{new int[]{14,11,13,9},new int[]{9,14,11,13},new int[]{13,9,14,11},new int[]{11,13,9,14}};
 	
@@ -11,6 +12,7 @@ public class Block {
 		data = new int[4][4];
 	}
 	
+	// create  Block from an array of int representing bytes
 	public Block(int[] byteArray) {
 		data = new int[4][4];
 		int i,j;
@@ -22,6 +24,7 @@ public class Block {
 		}
 	}
 	
+	// create a block using the same byte Matrix
 	public Block(int[][] byteMatrix){
 		data = new int[4][4];
 		for(int i=0;i<4;i++){
@@ -58,6 +61,7 @@ public class Block {
 	}
 	
 	//Encrypt block with key
+	// this operation is independant from the operation mode
 	public void encrypt(int[] key){
 		
 		//Expand key
@@ -82,27 +86,23 @@ public class Block {
 		for (int i = 0; i<rounds-1; i++) { //Do 9-13 rounds: byte substitution, shift rows, mix col, add round key
 
 		    int[] currentKey = new int[16];
-		    //System.out.print("\nCurrent key");
 		    for (int j = 0; j<16; j++) {
 
 			currentKey[j] = expandedKey[(i+1)*4 + j/4][j%4]; 
-			//System.out.print(currentKey[j] + " ");
 		    }
 		    this.regularRoundEncryption(currentKey);
-		    //System.out.println("\n After addRoundKey \n" + this.toString());
 		}
 
 		//Final round
-        //System.out.println("-----Final Round-----");
         int[] currentKey = new int[16];
         for (int j = 0; j<16; j++) {
             currentKey[j] = expandedKey[(rounds-1+1)*4 + j/4][j%4]; 
-            //System.out.print(currentKey[j] + " ");
         }
         this.lastRoundEncryption(currentKey);
 	}
 	
 	//Decrypt block with key
+	// this is the reverse of the encryption method
 	public void decrypt(int[] key){
 		
 		//Expand key
@@ -122,35 +122,28 @@ public class Block {
 			break;
 		}
 
-		int[] currentKey = new int[16]; //Extract the key to use for this round from the expanded key
+	int[] currentKey = new int[16]; //Extract the key to use for this round from the expanded key
         for (int j = 0; j<16; j++) {
             currentKey[j] = expandedKey[(rounds)*4 + j/4][j%4]; //40-43
-            //System.out.print(String.format("%02X", currentKey[j]) + " ");
         }
 
-		//System.out.println(this.toString());
 		this.invAddRoundKey(currentKey); //Add round key (original key) before going into first round
 
 
 		for (int i = 0; i<rounds-1; i++) { //Do 9-13 rounds: byte substitution, shift rows, mix col, add round key
 
 		    currentKey = new int[16];
-		    //System.out.print("\nCurrent key");
 		    for (int j = 0; j<16; j++) {
 
 			currentKey[j] = expandedKey[(rounds-(i+1))*4 + j/4][j%4];
-			//System.out.print(currentKey[j] + " ");
 		    }
 		    this.regularRoundDecryption(currentKey);
-		    //System.out.println("\n After addRoundKey \n" + this.toString());
 		}
 
 		//Final round
-        //System.out.println("-----Final Round-----");
         currentKey = new int[16];
         for (int j = 0; j<16; j++) {
             currentKey[j] = expandedKey[0 + j/4][j%4]; 
-            //System.out.print(currentKey[j] + " ");
         }
         this.lastRoundDecryption(currentKey);
 	}
