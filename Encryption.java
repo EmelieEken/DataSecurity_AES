@@ -12,22 +12,23 @@ public class Encryption{
         this.initVector = new int[0];
     }
 
+    //Save settings for encryption
     public Encryption(int modeOfOperation, int transmissionSize, int[] initVector) {
         this.modeOfOperation = modeOfOperation;
         this.transmissionSize = transmissionSize;
         this.initVector = initVector;
     }
 
+    //Encrypt text with key according to the saved settings
     public String Encrypt(int[] text, int[] key) {
 
     	// Checking the prerequisites
         if (text.length % 16 != 0) {
-            //Change to add padding?
             System.out.println("Text must be a multiple of 16 long");
             System.exit(0);
         }
 
-        if (key.length != 16 && key.length != 24 && key.length != 32) {
+        if (key.length != 16 && key.length != 24 && key.length != 32) { //Key must be of length 16, 24 or 32 bytes
             System.out.println("Key must be a 16, 24, or 32 bytes long");
             System.exit(0);
         }
@@ -45,17 +46,17 @@ public class Encryption{
         }
 
         //Check Transmission size
-        if (modeOfOperation != 1 && transmissionSize != 0) {
+        if (modeOfOperation != 1 && transmissionSize != 0) { //Should be set to 0 if not CFB
             System.out.println("Transmission size must be set to 0 for ECB, CBC, and OFB mode");
             System.exit(0);
         } 
 
-        if (modeOfOperation == 1 && (transmissionSize < 1 || transmissionSize > 16)) {
+        if (modeOfOperation == 1 && (transmissionSize < 1 || transmissionSize > 16)) { //For CFB, should be between 1 and 16
             System.out.println("Transmission size must be in the interval 1-16 bytes");
             System.exit(0);
         }
 
-        //Create blocks (array of Block), not for CFB
+        //Create blocks from text (array of Block), not for CFB since done after encryption
         if (modeOfOperation != 1) {
             blocks = new Block[text.length/16]; //Initialise array of textblocks for encryption
             for (int i=0; i<text.length/16; i++) {
@@ -64,12 +65,10 @@ public class Encryption{
                 for (int j=0; j<4; j++) {
                     for (int k=0; k<4; k++) {
                         textToBlock[n] = text[16*i+n];
-                        //System.out.print(textToBlock[n] + " ");
                         n++;
                     }
                 }
                 blocks[i] = new Block(textToBlock);
-                //System.out.println();
             }
         }
         
@@ -90,14 +89,11 @@ public class Encryption{
                     for (int j=0; j<4; j++) {
                         for (int k=0; k<4; k++) {
                             textToBlock[n] = text[16*i+n];
-                            //System.out.print(textToBlock[n] + " ");
                             n++;
                         }
                     }
                     blocks[i] = new Block(textToBlock);
-                    //System.out.println();
                 }
-
                 break;
             case 2:  //CBC
             	EncryptBlockCBC(blocks, key);
@@ -105,13 +101,13 @@ public class Encryption{
             case 3: //OFB
                 EncryptBlockOFB(blocks, key);
                 break;
-            default:
+            default: //If none of above, faulty input
                 System.out.println("Mode of operation must be 0,1,2, or 3 for ECB, CFB, CBC, or OFB");
                 break;
         }
             
 
-        //Read final ciphertext from the blocks
+        //Read final ciphertext from the blocks, output as one line
         String cipherText = "";
         for (int i=0; i<text.length/16; i++) {
             cipherText += blocks[i].toStringOneLine(); 
@@ -123,7 +119,7 @@ public class Encryption{
 
     //Functions for all modeOfOperation
 
-    //ECB ecryption, All blocks encrypted independent of each other
+    //ECB ecryption, all blocks encrypted independent of each other, in the same way
     private static void EncryptBlockECB(Block[] blocks, int[] key) {
 
         for (int i=0; i<blocks.length; i++) {
@@ -145,15 +141,15 @@ public class Encryption{
         }
     }
 
+    //CFB
     private void EncryptBlockCFB(int[] text ,int[] key) {
 
-        Block initBlock = new Block(this.initVector);
-
+        Block initBlock = new Block(this.initVector); //Make initVector into a Block (to be able to encrypt it later)
         int[] currentText = new int[transmissionSize];
 
         //Divide plaintext into arrays of length transmissionSize
         for(int i=0; i<text.length/transmissionSize; i++) {
-            initBlock.encrypt(key);
+            initBlock.encrypt(key); //Encrypt initVector
             int[] selectedBytes = selectSBytes(initBlock);//Select transmissionSize bytes
             int[] c_i = new int[transmissionSize]; //Ciphertext to be used in next round in shift register
             for (int j=0; j<transmissionSize; j++) {
@@ -166,48 +162,38 @@ public class Encryption{
 
     }
 
+    //Method used by EncryptBlockCFB before XOR with plaintext
     private int[] selectSBytes(Block block) {
-        //System.out.println(block.toString());
         int[] selectedBytes = new int[transmissionSize];
         for (int i=0; i<transmissionSize; i++) {
             selectedBytes[i] = block.get(i);
-            //System.out.println( String.format("%02X",selectedBytes[i]) + " ");
         }
-
         return selectedBytes;
     }
 
+     //Method used by DecryptBlockCFB to create new block to encrypt
     private int[] shiftRegister(Block previousEncrIV, int[] text) {
 
         int[] newIV = new int[16]; //16 = IV size
         for (int i=0; i<16-transmissionSize; i++) {
             newIV[i] = previousEncrIV.get(i+transmissionSize);//Get Least significant bits (to the right)
-            //System.out.print(String.format("%02X",newIV[i]) + " ");
         }
         for (int i=16-transmissionSize; i<16; i++) {
-            newIV[i] = text[i-(16-transmissionSize)]; 
-            //System.out.print(String.format("%02X",newIV[i]) + " ");
+            newIV[i] = text[i-(16-transmissionSize)]; //Add ciphertext to end
         }
 
         return newIV;
     }
 
+    //OFB
     private void EncryptBlockOFB(Block[] blocks, int[] key) {
-        //for (int i=0; i<initVector.length; i++) {
-        //    System.out.print(String.format("%02X",initVector[i]) + " ");
-        //}
         
         Block initBlock = new Block(this.initVector);
-        //System.out.print("\n" + initBlock.toString());
 
         for (int i=0; i<blocks.length; i++) {
             initBlock.encrypt(key); //Encrypt Nonce (= initVector)
-            blocks[i] = blocks[i].add(initBlock); //XOR first block and the encrypted nonce 
-        }
-        
-
-        
+            blocks[i] = blocks[i].add(initBlock); //XOR block and the encrypted nonce 
+        }  
     }
-
-    
+  
 }
