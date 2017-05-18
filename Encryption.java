@@ -20,26 +20,26 @@ public class Encryption{
 
     public String Encrypt(int[] text, int[] key) {
 
-    	//prerequisites
-        if (text.length % 16 != 0) {
+    	//Prerequisites
+        if (text.length % 16 != 0) { //Or according to transmission size?
             //Change to add padding?
             System.out.println("Text must be a multiple of 16 long");
             System.exit(0);
         }
 
-        if (key.length % 16 != 0) {
-            System.out.println("Key must be a multiple of 16 long");
+        if (key.length != 16 && key.length != 24 && key.length != 32) {
+            System.out.println("Key must be a 16, 24, or 32 bytes long");
             System.exit(0);
         }
 
         //Check Initialisation vector
-        if (modeOfOperation == 0 && (initVector.length != 1 || initVector[0] != 0)) {
+        if (modeOfOperation == 0 && (initVector.length != 1 || initVector[0] != 0)) { //Should be 0 if ECB used
             //System.out.println(initVector[0]);
             System.out.println("Initialisation vector must be set to 0 for ECB mode");
             System.exit(0);
         }
         
-        if (modeOfOperation < 4 && modeOfOperation > 0 && initVector.length != 16) {
+        if (modeOfOperation < 4 && modeOfOperation > 0 && initVector.length != 16) { //Should be 16 bytes long for the rest
             System.out.println("Initialisation vector must be 16 bytes long for CBC, CFB, and OFB mode");
             System.exit(0);
         }
@@ -168,11 +168,6 @@ public class Encryption{
             initBlock = new Block(shiftRegister(initBlock, c_i)); //Prepare for next round
 
         }
-        //for (int i=0; i<blocks.length; i++) {
-             //Encrypt Nonce (= initVector)
-
-            //blocks[i] = blocks[i].add(initBlock); //XOR first block and the encrypted nonce 
-        //}
 
     }
 
