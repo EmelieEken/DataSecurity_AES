@@ -57,12 +57,14 @@ public class Block {
 		return this.data[i%4][i/4];
 	}
 	
+	//Encrypt block with key
 	public void encrypt(int[] key){
 		
 		//Expand key
 		int[][] expandedKey = KeyManipulation.keyExpansion(key);
 		int rounds = 0;
 
+		//Decide number of rounds based on key length
 		switch(key.length) {
 		    case 16: 
 			rounds = 10;
@@ -100,13 +102,14 @@ public class Block {
         this.lastRoundEncryption(currentKey);
 	}
 	
-
+	//Decrypt block with key
 	public void decrypt(int[] key){
 		
 		//Expand key
 		int[][] expandedKey = KeyManipulation.keyExpansion(key);
 		int rounds = 0;
 
+		//Decide number of rounds based on key length
 		switch(key.length) {
 		    case 16: 
 			rounds = 10;
@@ -119,13 +122,13 @@ public class Block {
 			break;
 		}
 
-		int[] currentKey = new int[16];
+		int[] currentKey = new int[16]; //Extract the key to use for this round from the expanded key
         for (int j = 0; j<16; j++) {
             currentKey[j] = expandedKey[(rounds)*4 + j/4][j%4]; //40-43
             //System.out.print(String.format("%02X", currentKey[j]) + " ");
         }
 
-		System.out.println(this.toString());
+		//System.out.println(this.toString());
 		this.invAddRoundKey(currentKey); //Add round key (original key) before going into first round
 
 
@@ -135,7 +138,7 @@ public class Block {
 		    //System.out.print("\nCurrent key");
 		    for (int j = 0; j<16; j++) {
 
-			currentKey[j] = expandedKey[(rounds-(i+1))*4 + j/4][j%4]; //Check this
+			currentKey[j] = expandedKey[(rounds-(i+1))*4 + j/4][j%4];
 			//System.out.print(currentKey[j] + " ");
 		    }
 		    this.regularRoundDecryption(currentKey);
@@ -182,10 +185,10 @@ public class Block {
 		this.invAddRoundKey(key);
 	}
 	
-	
+	//Mix column
 	public void mixColumn(int columnNum,int[][] multMatrix){
 		
-		// we built the new column
+		//Build the new column
 		int[] newColumn = new int[4];
 		for(int i=0;i<4;i++){
 			Polynomial p = new Polynomial();
@@ -223,7 +226,7 @@ public class Block {
 		for(int j=0;j<4;j++){
 			mixColumn(j,ENCRYPTION_MATRIX);
 		}
-		////System.out.println("Mixcols Encr  \n"+this.toString());
+		//System.out.println("Mixcols Encr  \n"+this.toString());
 	}
 	
 	public void mixColumnsDecryption(){
@@ -295,12 +298,10 @@ public class Block {
 
         //Substitute bytes, fist 4 bits = row, last 4 bits = column
         for (int i=0; i<4; i++) {
-            //System.out.print("[ ");
+
             for (int j=0;j<4;j++) {
                 data[i][j] = substituteByte(data[i][j]);
-                //System.out.print(Integer.toHexString(data[i][j]) + " ");
             }
-            //System.out.println("]");
         }
 
 		//System.out.println("SubstBytes Encr  \n"+this.toString());
@@ -350,12 +351,11 @@ public class Block {
 	public void invSubstituteBytes() {
 
         for (int i=0; i<4; i++) {
-            //System.out.print("[ ");
+            
             for (int j=0;j<4;j++) {
                 data[i][j] = invSubstituteByte(data[i][j]);
-                //System.out.print(Integer.toHexString(data[i][j]) + " ");
             }
-            //System.out.println("]");
+            
         }
 		//System.out.println("invSubstBytes  \n"+this.toString());
 	}
