@@ -1,6 +1,6 @@
 public class KeyManipulation{
 
-    //Return key divided into words ( = 4 bytes) in 2d array
+    //Return expanded key divided into words ( = 4 bytes) in 2d array
     public static int[][] keyExpansion(int[] key) {
         int keySize = key.length;
         int expandedKeySize = 0;
@@ -10,7 +10,7 @@ public class KeyManipulation{
                 expandedKeySize = 44; //Number of words
                 rounds = 10;
                 break;
-            case 24: //Test these
+            case 24: //Test these?
                 expandedKeySize = 52; //Number of words
                 rounds = 12;
                 break;
@@ -21,53 +21,46 @@ public class KeyManipulation{
         }
         int[][] expandedKey = new int[expandedKeySize][4]; //words have 4 bytes
 
-        //System.out.println("\n Key Expansion \n");
-
         for (int i=0; i<4; i++){ //Add first 4 words
             for (int j=0; j<4; j++) {
                 expandedKey[i][j] = key[i*4+j]; //Add bytes in word
-                //System.out.print(Integer.toHexString(expandedKey[i][j]) + " ");
             }
-            //System.out.println();
         }
 
         //Create round constant (1st of 4 bytes in word, the rest are 0)
         int[] roundConstant = getRoundConstants(rounds);
 
-        //System.out.println("\n");
         for (int i=4;i<expandedKeySize;i++) {
             if (i%4 == 0) {
-                //System.out.println();
                 for(int j=0;j<4;j++) {
+
                     expandedKey[i][j] = expandedKey[i-1][(j+1)%4]; //Shift rows
-                    //System.out.print(Integer.toHexString(expandedKey[i][j]) + " ");
                     expandedKey[i][j] = Block.substituteByte(expandedKey[i][j]); //Subst in S-box
-                    //System.out.print(Integer.toHexString(expandedKey[i][j]) + " ");
-                    if (j == 0) {//XOR Round constant
+                    
+                    if (j == 0) {//XOR with Round constant for every 4th
                         expandedKey[i][j] = expandedKey[i][j]^roundConstant[i/4-1];
                     }
-                    expandedKey[i][j] = expandedKey[i][j]^expandedKey[i-4][j];
-                    //System.out.print(Integer.toHexString(expandedKey[i][j]) + " ");
+                    expandedKey[i][j] = expandedKey[i][j]^expandedKey[i-4][j]; //XOR with 4 back
                 }
 
 
             } else {
                 for (int j=0; j<4; j++){
-                    expandedKey[i][j] = expandedKey[i-1][j]^expandedKey[i-4][j];
-                    //System.out.print(Integer.toHexString(expandedKey[i][j]) + " ");
+                    expandedKey[i][j] = expandedKey[i-1][j]^expandedKey[i-4][j]; //XOR previous and 4 back
                 }
             }
-            //System.out.println();
         }
 
         return expandedKey;
     }
 
+    //Create the round constants to use in key expansion
     private static int[] getRoundConstants(int rounds) {
+
         int[] roundConstant = new int[rounds];
         roundConstant[0] = 0x01;
         Polynomial p2 = Polynomial.fromByte(0x02);
-        //System.out.print("\nRound constants: " + Integer.toHexString(roundConstant[0]) + " ");
+
         //current = previous*2 in GF(2^8)
         for (int i=1;i<roundConstant.length;i++) {
             if (2*roundConstant[i-1]>255) {
@@ -76,9 +69,7 @@ public class KeyManipulation{
             } else {
                 roundConstant[i] = 2*roundConstant[i-1];
             }
-            //System.out.print(Integer.toHexString(roundConstant[i]) + " ");
         }
-        //System.out.println("\n");
 
         return roundConstant;
     }
