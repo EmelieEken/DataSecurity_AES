@@ -7,6 +7,7 @@ public class Polynomial {
 	private boolean[] coeff;
 	private int degree;
 	
+	// useful polynomials to perform to convert high degree polynomials to GF(2^8)
 	final static public Polynomial RED = new Polynomial(new boolean[]{true,true,false,true,true,false,false,false,true});
 	final static public Polynomial RED3 = new Polynomial(new boolean[]{true,true,false,true});
 	
@@ -37,12 +38,13 @@ public class Polynomial {
 		}
 	}
 	
+	// copy in the range of the given degree
 	public Polynomial(int degree, Polynomial p){
 		this.degree = degree;
 		this.coeff = Arrays.copyOfRange(p.coeff, 0, degree);
 	}
 	
-	
+	// initialise a polynomial at the given degree
 	public Polynomial(int degree){
 		this.degree = degree;
 		this.coeff = new boolean[degree];
@@ -52,6 +54,7 @@ public class Polynomial {
 		this.coeff[degree-1] = true;
 	}
 	
+	// create a polynomial of GF(2^8) corresponding to the given int byte value
 	public static Polynomial fromByte(int byteValue){
 		Polynomial res = new Polynomial(8);
 		res.coeff[7] = false;
@@ -69,6 +72,8 @@ public class Polynomial {
 		return res;
 	}
 	
+	// update the int attribute of the polynomial to make it correspond to the boolean array
+	// useful after an algebric operation
 	private void updateDegree(){
 		if(coeff == null){
 			degree = 0;
@@ -82,6 +87,7 @@ public class Polynomial {
 		}
 	}
 	
+	// return an int corresponding to the byte value of the polynomial
 	public int toByte(){
 		int res = 0;
 		for(int i=0; i<degree;i++){
@@ -96,7 +102,7 @@ public class Polynomial {
 		return this.degree;
 	}
 	
-	
+	// XOR 2 polynomials
 	public Polynomial add(Polynomial p){		
 		
 		Polynomial maxP, minP;
@@ -122,6 +128,7 @@ public class Polynomial {
 		return res;
 	}
 	
+	// XOR several polynomials
 	public Polynomial add(Polynomial... args){
 		Polynomial res = new Polynomial(this);
 		for(Polynomial p : args){
@@ -131,7 +138,8 @@ public class Polynomial {
 		return res;
 	}
 	
-	
+	// multily 2 polynomials.
+	// the result is not necessary in GF(2^8)
 	public Polynomial mult(Polynomial p){
 		Polynomial res = new Polynomial();
 		for(int i=0;i<this.degree;i++){
@@ -142,6 +150,8 @@ public class Polynomial {
 		return res;
 	}
 	
+	// multiply then divide by an irreduceable polynomial
+	//result is in GF(2^8)
 	public Polynomial multGF8(Polynomial p){
 		Polynomial res = new Polynomial();
 		for(int i=0;i<this.degree;i++){
@@ -152,6 +162,8 @@ public class Polynomial {
 		return res.divide(RED);
 	}
 	
+	// modify a coeff of the polynomial
+	// also update the degree if necessary
 	public Polynomial addCoeff(int coeff_index){
 		Polynomial res = new Polynomial(this);
 		res.coeff[coeff_index] = res.coeff[coeff_index] ? false : true;
@@ -166,6 +178,7 @@ public class Polynomial {
 		return res;
 	}
 	
+	// shift the polynomial by n
 	public Polynomial shift(int n){
 		
 		Polynomial res = new Polynomial(this.degree + n);
@@ -179,7 +192,7 @@ public class Polynomial {
 	}
 	
 	
-	
+	// returns a string corresponding to the polynomial
 	public String toString(){
 		String res = "[";
 		for(int i=0;i<degree;i++){
@@ -192,14 +205,9 @@ public class Polynomial {
 	// return the remaining
 	public Polynomial divide(Polynomial p){
 
-		//System.out.println("divide start res = "+this.toString());
-
-//		System.out.println("divide start res = "+this.toString());
-
 		if(this.degree < p.degree){
 			return new Polynomial(this);
 		}
-		//useless ?
 		else if(this.degree == p.degree){
 			return this.add(p);
 		}
@@ -210,7 +218,6 @@ public class Polynomial {
 			while(res.degree > p.degree){
 				diff = res.degree - p.degree;
 				res = res.add(p.shift(diff));
-//				System.out.println("divide iteration res = "+res.toString());
 			}
 			
 			
