@@ -19,7 +19,7 @@ public class AESInterface {
 
         try //Read input file to get settings
         {
-            if (!Files.exists(Paths.get(filename))) //If file doesn't already exist
+            if (!Files.exists(Paths.get(filename))) //If file doesn't exist
             {
                 System.out.println("File doesn't exist");
                 System.exit(0);
@@ -37,7 +37,7 @@ public class AESInterface {
 
              int modeOfOperation = Integer.parseInt(fileLines.get(1)); //0 = ECB, 1 = CFB, 2 = CBC, 3 = OFB
 
-             int transmissionSize = Integer.parseInt(fileLines.get(2)); //Should be checked?
+             int transmissionSize = Integer.parseInt(fileLines.get(2)); //0 if not CFB, otherwise between 1 and 16
 
              String textString = fileLines.get(3); //Plaintext or ciphertext
 
@@ -51,15 +51,14 @@ public class AESInterface {
              int[] initVector = stringToHex(initVectorString);
              
 
-
+             //Decide whether to encrypt or decrypt
              if (encryptionOrDecryption == 0) {
                  Encryption encr = new Encryption(modeOfOperation, transmissionSize, initVector);
-                 System.out.println(encr.Encrypt(text, key)); //Out-comment to decrypt before printing
-                 //String cipherTextStr = encr.Encrypt(text, key); //Un-comment to decrypt before printing
-                 //int[] cipherText = stringToHex(cipherTextStr); //Un-comment to decrypt before printing
-                 //System.out.println(cipherText);
-                 //Decryption decr = new Decryption(modeOfOperation, transmissionSize, initVector); //Un-comment to decrypt before printing
-                 //System.out.println(decr.Decrypt(cipherText, key)); //Un-comment to decrypt before printing
+                 //System.out.println(encr.Encrypt(text, key)); //Out-comment to decrypt before printing
+                 String cipherTextStr = encr.Encrypt(text, key); //Un-comment to decrypt before printing
+                 int[] cipherText = stringToHex(cipherTextStr); //Un-comment to decrypt before printing
+                 Decryption decr = new Decryption(modeOfOperation, transmissionSize, initVector); //Un-comment to decrypt before printing
+                 System.out.println(decr.Decrypt(cipherText, key)); //Un-comment to decrypt before printing
              } else if (encryptionOrDecryption == 1) {
                  Decryption decr = new Decryption(modeOfOperation, transmissionSize, initVector);
                  System.out.println(decr.Decrypt(text, key));
@@ -84,9 +83,8 @@ public class AESInterface {
         } else {
             List<Integer> strAsHexList = new ArrayList<Integer>();
             int i = 0;
-            while (i < str.length()-1) { //-1 to handle case where just one number
-                String number = String.valueOf(str.charAt(i)) + String.valueOf(str.charAt(i+1));//+str.charAt(0+1);
-                //System.out.print(Integer.parseInt(number, 16)); //Integer.parseInt(number, 16)
+            while (i < str.length()) { //Read 2 characters at the time and parse to Integer
+                String number = String.valueOf(str.charAt(i)) + String.valueOf(str.charAt(i+1)); 
                 strAsHexList.add(Integer.parseInt(number, 16));
                 i = i+3;
             }
