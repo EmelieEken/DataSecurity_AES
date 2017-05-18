@@ -93,7 +93,7 @@ public class Decryption{
                 }
                 break;
             case 2:  //CBC
-                DecryptBlockCBC(blocks, initVector);
+                DecryptBlockCBC(blocks, key);
                 break;
             case 3: //OFB
                 DecryptBlockOFB(blocks, key);
