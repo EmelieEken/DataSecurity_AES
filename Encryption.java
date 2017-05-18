@@ -20,7 +20,7 @@ public class Encryption{
 
     public String Encrypt(int[] text, int[] key) {
 
-    	//prerequisites
+    	// checking the prerequisites
         if (text.length % 16 != 0) {
             //Change to add padding?
             System.out.println("Text must be a multiple of 16 long");
@@ -34,7 +34,6 @@ public class Encryption{
 
         //Check Initialisation vector
         if (modeOfOperation == 0 && (initVector.length != 1 || initVector[0] != 0)) {
-            //System.out.println(initVector[0]);
             System.out.println("Initialisation vector must be set to 0 for ECB mode");
             System.exit(0);
         }
@@ -109,12 +108,6 @@ public class Encryption{
                 System.out.println("Mode of operation must be 0,1,2, or 3 for ECB, CFB, CBC, or OFB");
                 break;
         }
-
-//        //Print blocks
-//        System.out.print("\nAfter encryption: \n");
-//        for (int i=0; i<text.length/16; i++) {
-//            blocks[i].toString();
-//        }
             
 
         //Read final ciphertext from the blocks
@@ -138,11 +131,13 @@ public class Encryption{
 
     }  
     
+    // Encrypts the block array with CBC Method
     //not static because it uses initVector
     private void EncryptBlockCBC(Block[] blocks, int[] key) {
 
     	Block tmp = new Block(initVector);
         for (int i=0; i<blocks.length; i++) {
+            // add the previous encrypted block before encryot the current one
         	tmp = tmp.add(blocks[i]);
         	tmp.encrypt(key);
             blocks[i] = new Block(tmp);
@@ -152,7 +147,6 @@ public class Encryption{
     private void EncryptBlockCFB(int[] text ,int[] key) {
 
         Block initBlock = new Block(this.initVector);
-        //System.out.print("\n" + initBlock.toString());
 
         int[] currentText = new int[transmissionSize];
 
